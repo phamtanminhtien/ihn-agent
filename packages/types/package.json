@@ -1,5 +1,5 @@
 {
-  "name": "@ihn-agent/schema",
+  "name": "@ihn-agent/types",
   "version": "1.0.0",
   "type": "module",
   "main": "./dist/index.js",
@@ -15,11 +15,5 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "type-check": "tsc --noEmit"
-  },
-  "dependencies": {
-    "zod": "^3.23.8"
-  },
-  "devDependencies": {
-    "typescript": "^6.0.3"
   }
 }

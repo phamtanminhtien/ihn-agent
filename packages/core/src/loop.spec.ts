@@ -1,4 +1,4 @@
-import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/schema';
+import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/types';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { AgentLoop } from './loop.js';
@@ -15,7 +15,15 @@ describe('AgentLoop', () => {
     mockProvider = {
       streamChat: jest.fn<ChatProvider['streamChat']>(),
     };
-    dispatcher = new ToolDispatcher(new ToolRegistry(), { workingMemory: {} });
+    dispatcher = new ToolDispatcher(new ToolRegistry(), {
+      workingMemory: {
+        plan: [],
+        openFiles: [],
+        variables: {},
+        completedSteps: [],
+      },
+      signal: new AbortController().signal,
+    });
     dispatchOneMock = jest.spyOn(dispatcher, 'dispatchOne');
     loop = new AgentLoop(mockProvider, dispatcher);
   });

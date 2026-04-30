@@ -1,3 +1,5 @@
+import type { WorkingMemory } from './memory.types.js';
+
 export type RiskLevel = 'safe' | 'low' | 'medium' | 'high';
 
 export interface ToolMetadata {
@@ -27,11 +29,11 @@ export interface ToolContext {
   /**
    * Shared state across tool calls within one session
    */
-  workingMemory: Record<string, unknown>;
+  workingMemory: WorkingMemory;
   /**
    * Cancelled on Ctrl+C or timeout
    */
-  signal?: AbortSignal;
+  signal: AbortSignal;
 }
 
 export interface Tool<TInput = unknown, TOutput = unknown> {

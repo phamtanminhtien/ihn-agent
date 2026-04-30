@@ -7,7 +7,7 @@ import type {
   Tool,
   ToolResult,
   ToolSchema,
-} from '@ihn-agent/schema';
+} from '@ihn-agent/types';
 
 import { ConversationHistory } from './conversation.js';
 import { AgentLoop } from './loop.js';
@@ -24,7 +24,13 @@ export class Agent extends EventEmitter {
     super();
 
     const dispatcher = new ToolDispatcher(this.registry, {
-      workingMemory: {},
+      workingMemory: {
+        plan: [],
+        openFiles: [],
+        variables: {},
+        completedSteps: [],
+      },
+      signal: new AbortController().signal,
       ...options.toolContext,
     });
     this.loop = new AgentLoop(options.provider, dispatcher);

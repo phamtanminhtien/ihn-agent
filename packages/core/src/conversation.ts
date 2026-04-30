@@ -1,4 +1,4 @@
-import type { AssistantMessage, ConversationMessage, ToolResult } from '@ihn-agent/schema';
+import type { AssistantMessage, ConversationMessage, ToolResult } from '@ihn-agent/types';
 
 export class ConversationHistory {
   private readonly _messages: ConversationMessage[] = [];

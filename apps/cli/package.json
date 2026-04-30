@@ -12,12 +12,12 @@
   },
   "dependencies": {
     "@ihn-agent/core": "workspace:*",
+    "@ihn-agent/types": "workspace:*",
     "commander": "^13.1.0",
     "ink": "^7.0.1",
     "react": "^19.2.5"
   },
   "devDependencies": {
-    "@types/node": "^25.6.0",
     "@types/react": "^19.2.14"
   }
 }

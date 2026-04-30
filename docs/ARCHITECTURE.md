@@ -74,7 +74,7 @@ ihn-agent/                          ← workspace root
 │   ├── tools/                      ← @ihn-agent/tools (built-in tool implementations)
 │   ├── providers/                  ← @ihn-agent/providers (LLM adapter layer)
 │   ├── memory/                     ← @ihn-agent/memory (persistent & working memory)
-│   └── schema/                     ← @ihn-agent/schema (shared JSON schemas & types)
+│   └── types/                      ← @ihn-agent/types (shared types)
 ├── docs/
 │   └── ARCHITECTURE.md             ← this file
 ├── pnpm-workspace.yaml
@@ -87,16 +87,16 @@ The monorepo is managed with **pnpm workspaces**. Internal packages reference ea
 
 ## Package Responsibilities
 
-| Package              | Name                   | Role                                                             |
-| -------------------- | ---------------------- | ---------------------------------------------------------------- |
-| `apps/cli`           | `@ihn-agent/cli`       | Terminal UI (Ink/React), user I/O, keyboard handling             |
-| `packages/core`      | `@ihn-agent/core`      | Agent loop, conversation state, tool dispatch, streaming         |
-| `packages/tools`     | `@ihn-agent/tools`     | Concrete tool implementations (fs, shell, search, …)             |
-| `packages/providers` | `@ihn-agent/providers` | LLM provider adapters (Anthropic, OpenAI, Gemini)                |
-| `packages/memory`    | `@ihn-agent/memory`    | Working memory, persistent session history, memory store         |
-| `packages/schema`    | `@ihn-agent/schema`    | Shared JSON Schema definitions, Zod validators, TypeScript types |
+| Package              | Name                   | Role                                                     |
+| -------------------- | ---------------------- | -------------------------------------------------------- |
+| `apps/cli`           | `@ihn-agent/cli`       | Terminal UI (Ink/React), user I/O, keyboard handling     |
+| `packages/core`      | `@ihn-agent/core`      | Agent loop, conversation state, tool dispatch, streaming |
+| `packages/tools`     | `@ihn-agent/tools`     | Concrete tool implementations (fs, shell, search, …)     |
+| `packages/providers` | `@ihn-agent/providers` | LLM provider adapters (Anthropic, OpenAI, Gemini)        |
+| `packages/memory`    | `@ihn-agent/memory`    | Working memory, persistent session history, memory store |
+| `packages/types`     | `@ihn-agent/types`     | Shared TypeScript type definitions                       |
 
-Dependencies flow **downward only**: `cli → core → tools, providers, memory, schema`.
+Dependencies flow **downward only**: `cli → core → tools, providers, memory, types`.
 
 ---
 
@@ -305,21 +305,22 @@ export interface MemoryStore {
 
 ### Schema Package
 
-`@ihn-agent/schema` is the **single source of truth** for all shared types, JSON Schema definitions, and Zod validators used across packages. Keeping schemas in their own package prevents circular dependencies and allows any package to import types without pulling in runtime logic.
+`@ihn-agent/types` is the **single source of truth** for all shared TypeScript types used across packages. Keeping types in their own package prevents circular dependencies and allows any package to import definitions without pulling in runtime logic.
 
 ```
-packages/schema/src/
-├── tool.ts          ← ToolSchema, ToolCall, ToolResult definitions
-├── message.ts       ← Message, Role, StreamChunk types
-├── config.ts        ← AgentConfig JSON Schema + Zod validator
-├── memory.ts        ← MemoryEntry, WorkingMemory interfaces
+packages/types/src/
+├── agent.types.ts   ← ProviderStream, ChatProvider, AgentEvent
+├── tool.types.ts    ← ToolSchema, ToolCall, ToolResult definitions
+├── message.types.ts ← Message, Role, StreamChunk types
+├── config.types.ts  ← AgentConfig interface
+├── memory.types.ts  ← MemoryEntry, WorkingMemory interfaces
 └── index.ts         ← re-exports everything
 ```
 
-All other packages import shared types from `@ihn-agent/schema`:
+All other packages import shared types from `@ihn-agent/types`:
 
 ```typescript
-import type { ToolSchema, Message, AgentConfig } from '@ihn-agent/schema';
+import type { ToolSchema, Message, AgentConfig } from '@ihn-agent/types';
 ```
 
 ---
@@ -397,10 +398,10 @@ The directory is created automatically on first run if it does not exist.
 
 ### Config Schema
 
-The `AgentConfig` interface and its JSON Schema are defined in `@ihn-agent/schema` and consumed by `ConfigLoader` in `@ihn-agent/core`.
+The `AgentConfig` interface and its JSON Schema are defined in `@ihn-agent/types` and consumed by `ConfigLoader` in `@ihn-agent/core`.
 
 ```typescript
-// packages/schema/src/config.ts
+// packages/core/src/config.schema.ts
 export interface AgentConfig {
   // LLM provider
   provider: 'anthropic' | 'openai' | 'gemini'; // default: 'anthropic'
@@ -759,7 +760,7 @@ Provider-specific SDKs are **never imported** in `@ihn-agent/core`. The core onl
 
 ### 5. JSON Schema for tool definitions
 
-Tool input schemas are defined as JSON Schema objects (centralised in `@ihn-agent/schema`). The same schema is sent to the LLM (so it knows how to call the tool) and used for runtime validation (so bad calls are caught early with helpful errors).
+Tool input schemas are defined as JSON Schema objects (centralised in `@ihn-agent/types`). The same schema is sent to the LLM (so it knows how to call the tool) and used for runtime validation (so bad calls are caught early with helpful errors).
 
 ### 6. Layered configuration (env > JSON file)
 
@@ -767,7 +768,7 @@ Config is never hard-coded. `ConfigLoader` merges defaults → JSON file → env
 
 ### 7. Dedicated memory and schema packages
 
-`@ihn-agent/memory` encapsulates all state concerns (working memory, persistence, summarisation) so the core loop stays focused on orchestration. `@ihn-agent/schema` is the single import point for shared types, preventing circular dependencies and duplicated definitions across packages.
+`@ihn-agent/memory` encapsulates all state concerns (working memory, persistence, summarisation) so the core loop stays focused on orchestration. `@ihn-agent/types` is the single import point for shared types, preventing circular dependencies and duplicated definitions across packages.
 
 ---
 
@@ -868,11 +869,11 @@ Features deferred from v1 but architecturally planned for:
 | ------------------------------- | -------------------------------------------------------------------------------------------- |
 | Add a new tool                  | Create a `Tool` implementation in `@ihn-agent/tools`, register it in `ToolRegistry`          |
 | Add a new LLM provider          | Implement `LLMProvider` interface in `@ihn-agent/providers`                                  |
-| Add a new config key            | Add field to `AgentConfig` in `@ihn-agent/schema`, map it in `ConfigLoader.readEnv()`        |
+| Add a new config key            | Add field to `AgentConfig` in `@ihn-agent/types`, map it in `ConfigLoader.readEnv()`         |
 | Add a new UI surface (web, TUI) | Create a new app in `apps/`, import `@ihn-agent/core`                                        |
 | Change context strategy         | Replace `ConversationHistory` implementation, core loop doesn't change                       |
 | Add persistent memory           | Implement `MemoryStore` in `@ihn-agent/memory` — reads/writes key context at turn boundaries |
-| Add new shared types            | Add definitions to `@ihn-agent/schema` and re-export from `index.ts`                         |
+| Add new shared types            | Add definitions to `@ihn-agent/types` and re-export from `index.ts`                          |
 
 ---
 

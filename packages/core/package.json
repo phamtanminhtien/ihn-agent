@@ -18,6 +18,6 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
-    "@ihn-agent/schema": "workspace:*"
+    "@ihn-agent/types": "workspace:*"
   }
 }

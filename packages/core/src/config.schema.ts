@@ -1,6 +1,5 @@
+import type { AgentConfig } from '@ihn-agent/types';
 import { z } from 'zod';
-
-import type { AgentConfig } from './types.js';
 
 export const LLMProviderSchema = z.enum(['anthropic', 'openai', 'gemini']) satisfies z.ZodType<
   AgentConfig['provider']

@@ -1,4 +1,4 @@
-import type { Tool, ToolSchema } from '@ihn-agent/schema';
+import type { Tool, ToolSchema } from '@ihn-agent/types';
 
 export class ToolRegistry {
   private readonly tools = new Map<string, Tool>();

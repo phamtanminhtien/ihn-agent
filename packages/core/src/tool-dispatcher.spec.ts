@@ -1,4 +1,4 @@
-import type { Tool, ToolContext } from '@ihn-agent/schema';
+import type { Tool, ToolContext } from '@ihn-agent/types';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { ToolDispatcher } from './tool-dispatcher.js';
@@ -11,7 +11,15 @@ describe('ToolDispatcher', () => {
 
   beforeEach(() => {
     registry = new ToolRegistry();
-    ctx = { workingMemory: {} };
+    ctx = {
+      workingMemory: {
+        plan: [],
+        openFiles: [],
+        variables: {},
+        completedSteps: [],
+      },
+      signal: new AbortController().signal,
+    };
     dispatcher = new ToolDispatcher(registry, ctx);
   });
 

@@ -3,8 +3,8 @@ import type {
   ConversationMessage,
   StreamChunk,
   ToolResult,
-} from '../message/index.js';
-import type { ToolContext, ToolSchema } from '../tool/index.js';
+} from './message.types.js';
+import type { ToolContext, ToolSchema } from './tool.types.js';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
 export type AgentThinkingEvent = { type: 'thinking'; content: string };

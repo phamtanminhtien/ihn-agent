@@ -1,4 +1,4 @@
-import type { Tool } from '@ihn-agent/schema';
+import type { Tool } from '@ihn-agent/types';
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ToolRegistry } from './tool-registry.js';

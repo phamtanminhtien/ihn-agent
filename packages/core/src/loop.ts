@@ -5,7 +5,7 @@ import type {
   StreamChunk,
   ToolResult,
   ToolSchema,
-} from '@ihn-agent/schema';
+} from '@ihn-agent/types';
 
 import { StreamingHandler } from './streaming.js';
 import { ToolDispatcher } from './tool-dispatcher.js';

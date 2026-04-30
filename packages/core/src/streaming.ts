@@ -1,4 +1,4 @@
-import type { AssistantMessage, StreamChunk, ToolCall } from '@ihn-agent/schema';
+import type { AssistantMessage, StreamChunk, ToolCall } from '@ihn-agent/types';
 
 type StopReason = NonNullable<AssistantMessage['stopReason']>;
 

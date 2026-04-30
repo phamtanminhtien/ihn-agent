@@ -2,14 +2,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-import { AgentConfigSchema } from '@ihn-agent/schema';
+import { AgentConfigSchema } from './config.schema.js';
 
 /**
  * Loads and validates agent configuration from multiple sources.
  * Precedence: Overrides > Environment Variables > Config File
  */
 export class ConfigLoader {
-  static load(overrides: Record<string, any> = {}) {
+  static load(overrides: Record<string, unknown> = {}) {
     const fileConfig = this.readJsonFile();
     const envConfig = this.readEnv();
 
@@ -20,12 +20,12 @@ export class ConfigLoader {
       ...overrides,
     };
 
-    // Validate using Zod schema from @ihn-agent/schema
+    // Validate using Zod schema from @ihn-agent/types
     // This will also apply default values defined in the schema
     return AgentConfigSchema.parse(rawConfig);
   }
 
-  private static readJsonFile(): Record<string, any> {
+  private static readJsonFile(): Record<string, unknown> {
     const homeConfigPath = path.join(os.homedir(), '.ihn', 'config.json');
     const localConfigPath = path.join(process.cwd(), '.ihn', 'config.json');
 
@@ -41,8 +41,8 @@ export class ConfigLoader {
     }
   }
 
-  private static readEnv(): Record<string, any> {
-    const config: Record<string, any> = {};
+  private static readEnv(): Record<string, unknown> {
+    const config: Record<string, unknown> = {};
 
     if (process.env.IHN_PROVIDER) config.provider = process.env.IHN_PROVIDER;
     if (process.env.IHN_MODEL) config.model = process.env.IHN_MODEL;

@@ -1,4 +1,4 @@
-import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/schema';
+import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/types';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { Agent } from './agent.js';

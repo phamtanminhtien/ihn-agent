@@ -1,0 +1,17 @@
+{
+  "name": "@ihn-agent/tools",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Built-in tools for IHN Agent",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@ihn-agent/types": "workspace:*"
+  }
+}
