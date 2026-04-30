@@ -1,13 +1,13 @@
 import type { AgentConfig } from '@ihn-agent/types';
 import { z } from 'zod';
 
-export const LLMProviderSchema = z.enum(['anthropic', 'openai', 'gemini']) satisfies z.ZodType<
+export const ProviderNameSchema = z.enum(['anthropic', 'openai', 'gemini']) satisfies z.ZodType<
   AgentConfig['provider']
 >;
 export const UIThemeSchema = z.enum(['dark', 'light']) satisfies z.ZodType<AgentConfig['theme']>;
 
 export const AgentConfigSchema = z.object({
-  provider: LLMProviderSchema.default('anthropic'),
+  provider: ProviderNameSchema.default('anthropic'),
   model: z.string().min(1),
   apiKey: z.string().min(1),
   maxContextTokens: z.number().int().positive().default(100_000),

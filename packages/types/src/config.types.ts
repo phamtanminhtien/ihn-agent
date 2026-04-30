@@ -1,4 +1,4 @@
-export type LLMProvider = 'anthropic' | 'openai' | 'gemini';
+export type ProviderName = 'anthropic' | 'openai' | 'gemini';
 export type UITheme = 'dark' | 'light';
 
 export interface AgentConfig {
@@ -6,7 +6,7 @@ export interface AgentConfig {
    * LLM provider name
    * @default 'anthropic'
    */
-  provider: LLMProvider;
+  provider: ProviderName;
 
   /**
    * Model identifier (e.g. 'claude-3-5-sonnet-20240620')
