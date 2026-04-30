@@ -1,8 +1,7 @@
+import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/schema';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { Agent } from './agent.js';
-import type { ChatProvider, ProviderStream } from './loop.types.js';
-import type { StreamChunk } from './streaming.types.js';
 
 describe('Agent', () => {
   let mockProvider: jest.Mocked<ChatProvider>;

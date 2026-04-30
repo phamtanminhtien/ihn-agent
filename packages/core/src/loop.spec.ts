@@ -1,8 +1,7 @@
+import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/schema';
 import { beforeEach, describe, expect, it, jest } from '@jest/globals';
 
 import { AgentLoop } from './loop.js';
-import type { ChatProvider, ProviderStream } from './loop.types.js';
-import type { StreamChunk } from './streaming.types.js';
 import { ToolDispatcher } from './tool-dispatcher.js';
 import { ToolRegistry } from './tool-registry.js';
 

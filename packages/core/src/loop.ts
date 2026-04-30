@@ -1,7 +1,13 @@
-import type { ToolResult } from './conversation.types.js';
-import type { ChatProvider, LoopIterationOutput } from './loop.types.js';
+import type {
+  ChatProvider,
+  ConversationMessage,
+  LoopIterationOutput,
+  StreamChunk,
+  ToolResult,
+  ToolSchema,
+} from '@ihn-agent/schema';
+
 import { StreamingHandler } from './streaming.js';
-import type { StreamChunk } from './streaming.types.js';
 import { ToolDispatcher } from './tool-dispatcher.js';
 
 export class AgentLoop {
@@ -11,8 +17,8 @@ export class AgentLoop {
   ) {}
 
   async runOnce(
-    messages: readonly unknown[],
-    tools: readonly unknown[]
+    messages: readonly ConversationMessage[],
+    tools: readonly ToolSchema[]
   ): Promise<LoopIterationOutput> {
     const stream = await this.provider.streamChat(messages, tools);
     const handler = new StreamingHandler();

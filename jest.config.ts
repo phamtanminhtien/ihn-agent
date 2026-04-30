@@ -13,7 +13,7 @@ const jestConfig: JestConfigWithTsJest = {
       },
     ],
   },
-  testMatch: ['**/src/**/*.test.ts'],
+  testMatch: ['**/src/**/*.spec.ts'],
   extensionsToTreatAsEsm: ['.ts'],
 };
 

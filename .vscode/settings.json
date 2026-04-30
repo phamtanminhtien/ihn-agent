@@ -21,7 +21,7 @@
   ],
   "explorer.fileNesting.enabled": true,
   "explorer.fileNesting.patterns": {
-    "*.ts": "${capture}.test.ts, ${capture}.types.ts",
-    "*.tsx": "${capture}.test.tsx, ${capture}.types.ts"
+    "*.ts": "${capture}.spec.ts",
+    "*.tsx": "${capture}.spec.tsx"
   }
 }

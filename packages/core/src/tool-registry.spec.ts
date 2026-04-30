@@ -1,7 +1,7 @@
+import type { Tool } from '@ihn-agent/schema';
 import { beforeEach, describe, expect, it } from '@jest/globals';
 
 import { ToolRegistry } from './tool-registry.js';
-import type { Tool } from './tool-registry.types.js';
 
 describe('ToolRegistry', () => {
   let registry: ToolRegistry;

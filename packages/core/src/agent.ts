@@ -1,13 +1,18 @@
 import { EventEmitter } from 'node:events';
 
-import type { AgentEvent, AgentOptions } from './agent.types.js';
+import type {
+  AgentEvent,
+  AgentOptions,
+  StreamChunk,
+  Tool,
+  ToolResult,
+  ToolSchema,
+} from '@ihn-agent/schema';
+
 import { ConversationHistory } from './conversation.js';
-import type { ToolResult } from './conversation.types.js';
 import { AgentLoop } from './loop.js';
-import type { StreamChunk } from './streaming.types.js';
 import { ToolDispatcher } from './tool-dispatcher.js';
 import { ToolRegistry } from './tool-registry.js';
-import type { Tool, ToolSchema } from './tool-registry.types.js';
 
 export class Agent extends EventEmitter {
   private readonly conversation = new ConversationHistory();

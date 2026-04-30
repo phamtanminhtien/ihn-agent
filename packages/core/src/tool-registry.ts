@@ -1,4 +1,4 @@
-import type { Tool, ToolSchema } from './tool-registry.types.js';
+import type { Tool, ToolSchema } from '@ihn-agent/schema';
 
 export class ToolRegistry {
   private readonly tools = new Map<string, Tool>();

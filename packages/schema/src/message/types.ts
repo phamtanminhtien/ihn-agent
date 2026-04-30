@@ -15,16 +15,15 @@ export interface ToolResult {
   isError: boolean;
 }
 
-export interface AssistantMessage {
-  role: 'assistant';
-  content: string;
-  stopReason?: StopReason;
-  toolCalls?: ToolCall[];
-}
-
 export interface BaseMessage {
   role: ConversationRole;
   content: string;
+}
+
+export interface AssistantMessage extends BaseMessage {
+  role: 'assistant';
+  stopReason?: StopReason;
+  toolCalls?: ToolCall[];
 }
 
 export interface ToolResultMessage extends BaseMessage {
@@ -35,3 +34,23 @@ export interface ToolResultMessage extends BaseMessage {
 }
 
 export type ConversationMessage = BaseMessage | AssistantMessage | ToolResultMessage;
+
+// Streaming types
+export type StreamChunkType = 'text' | 'thinking' | 'tool_use';
+
+export interface TextChunk {
+  type: 'text';
+  content: string;
+}
+
+export interface ThinkingChunk {
+  type: 'thinking';
+  content: string;
+}
+
+export interface ToolUseChunk {
+  type: 'tool_use';
+  call: ToolCall;
+}
+
+export type StreamChunk = TextChunk | ThinkingChunk | ToolUseChunk;

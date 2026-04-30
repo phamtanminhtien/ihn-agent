@@ -1,5 +1,10 @@
-import type { ChatProvider } from './loop.types.js';
-import type { ToolContext } from './tool-registry.types.js';
+import type {
+  AssistantMessage,
+  ConversationMessage,
+  StreamChunk,
+  ToolResult,
+} from '../message/index.js';
+import type { ToolContext, ToolSchema } from '../tool/index.js';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
 export type AgentThinkingEvent = { type: 'thinking'; content: string };
@@ -20,6 +25,23 @@ export type AgentEvent =
   | AgentToolResultEvent
   | AgentTurnEndEvent
   | AgentErrorEvent;
+
+export interface ProviderStream {
+  [Symbol.asyncIterator](): AsyncIterator<StreamChunk>;
+}
+
+export interface ChatProvider {
+  streamChat(
+    messages: readonly ConversationMessage[],
+    tools: readonly ToolSchema[]
+  ): Promise<ProviderStream>;
+}
+
+export interface LoopIterationOutput {
+  chunks: StreamChunk[];
+  assistantMessage: AssistantMessage;
+  toolResults: ToolResult[];
+}
 
 export interface AgentOptions {
   provider: ChatProvider;
