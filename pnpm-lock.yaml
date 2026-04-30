@@ -87,6 +87,12 @@ importers:
       '@ihn-agent/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@ihn-agent/providers':
+        specifier: workspace:*
+        version: link:../../packages/providers
+      '@ihn-agent/tools':
+        specifier: workspace:*
+        version: link:../../packages/tools
       '@ihn-agent/types':
         specifier: workspace:*
         version: link:../../packages/types
