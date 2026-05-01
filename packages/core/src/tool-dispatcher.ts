@@ -49,7 +49,8 @@ export class ToolDispatcher {
     }
 
     try {
-      const output = await tool.execute(call.input, this.ctx);
+      const input = tool.validate ? tool.validate(call.input) : call.input;
+      const output = await tool.execute(input, this.ctx);
       return {
         toolCallId: call.id,
         name: call.name,

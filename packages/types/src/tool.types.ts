@@ -45,6 +45,7 @@ export interface Tool<TInput = unknown, TOutput = unknown> {
   inputSchema: unknown;
   metadata: ToolMetadata;
   execute(input: TInput, ctx: ToolContext): Promise<TOutput>;
+  validate?(input: unknown): TInput;
 }
 
 export interface ToolSchema {

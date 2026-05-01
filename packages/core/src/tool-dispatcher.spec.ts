@@ -169,4 +169,38 @@ describe('ToolDispatcher', () => {
     expect(result.status).toBe('success');
     expect(result.content).toBe('secret');
   });
+  it('should call validate if present to apply defaults', async () => {
+    const mockExecute = vi.fn().mockResolvedValue('ok');
+    const mockValidate = vi.fn().mockImplementation((input: any) => ({
+      ...input,
+      defaultedParam: input.defaultedParam ?? 'default_value',
+    }));
+
+    const mockTool: Tool = {
+      name: 'validated_tool',
+      description: 'desc',
+      inputSchema: {},
+      metadata: {
+        requiresConfirmation: false,
+        riskLevel: 'safe',
+        cacheable: false,
+        retryable: false,
+      },
+      execute: mockExecute,
+      validate: mockValidate,
+    };
+    registry.register(mockTool);
+
+    await dispatcher.dispatchOne({
+      id: 'call_1',
+      name: 'validated_tool',
+      input: { providedParam: 'value' },
+    });
+
+    expect(mockValidate).toHaveBeenCalledWith({ providedParam: 'value' });
+    expect(mockExecute).toHaveBeenCalledWith(
+      { providedParam: 'value', defaultedParam: 'default_value' },
+      ctx
+    );
+  });
 });
