@@ -1,7 +1,7 @@
 import type { IPromptComposer, PromptVariables } from '@ihn-agent/types';
 
-import { PromptRegistry } from './registry.js';
-import { PromptTemplate } from './template.js';
+import { PromptRegistry } from './registry';
+import { PromptTemplate } from './template';
 
 export class PromptComposer implements IPromptComposer {
   private readonly blockNames: string[] = [];

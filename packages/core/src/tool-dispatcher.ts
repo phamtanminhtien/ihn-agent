@@ -1,6 +1,6 @@
 import type { ToolCall, ToolContext, ToolResult } from '@ihn-agent/types';
 
-import { ToolRegistry } from './tool-registry.js';
+import { ToolRegistry } from './tool-registry';
 
 function safeStringify(value: unknown): string {
   if (typeof value === 'string') {

@@ -12,9 +12,9 @@
     }
   },
   "scripts": {
-    "build": "tsc",
-    "dev": "tsc --watch",
-    "test": "node --experimental-vm-modules ../../node_modules/jest/bin/jest.js",
+    "build": "tsup src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "dev": "tsup src/index.ts --format esm --watch --dts",
+    "test": "vitest run",
     "type-check": "tsc --noEmit"
   },
   "dependencies": {

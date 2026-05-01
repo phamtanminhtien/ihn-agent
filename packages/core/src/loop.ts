@@ -8,8 +8,8 @@ import type {
   ToolSchema,
 } from '@ihn-agent/types';
 
-import { StreamingHandler } from './streaming.js';
-import { ToolDispatcher } from './tool-dispatcher.js';
+import { StreamingHandler } from './streaming';
+import { ToolDispatcher } from './tool-dispatcher';
 
 export class AgentLoop {
   constructor(

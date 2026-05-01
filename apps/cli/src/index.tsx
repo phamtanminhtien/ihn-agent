@@ -1,6 +1,6 @@
 import { render } from 'ink';
 
-import { App } from './app.js';
-import { initialConfig, initialPrompt } from './cli/program.js';
+import { App } from './app';
+import { initialConfig, initialPrompt } from './cli/program';
 
 render(<App initialConfig={initialConfig} initialPrompt={initialPrompt} />);

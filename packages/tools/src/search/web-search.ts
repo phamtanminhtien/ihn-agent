@@ -1,7 +1,7 @@
 import type { ToolContext, ToolMetadata } from '@ihn-agent/types';
 import { z } from 'zod';
 
-import { BaseTool } from '../base-tool.js';
+import { BaseTool } from '../base-tool';
 
 const WebSearchSchema = z.object({
   query: z.string().describe('The search query for the web'),

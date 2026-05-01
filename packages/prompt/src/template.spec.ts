@@ -1,6 +1,6 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
-import { PromptTemplate } from './template.js';
+import { PromptTemplate } from './template';
 
 describe('PromptTemplate', () => {
   it('should interpolate simple variables', () => {

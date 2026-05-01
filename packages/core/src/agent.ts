@@ -10,10 +10,10 @@ import type {
   ToolSchema,
 } from '@ihn-agent/types';
 
-import { ConversationHistory } from './conversation.js';
-import { AgentLoop } from './loop.js';
-import { ToolDispatcher } from './tool-dispatcher.js';
-import { ToolRegistry } from './tool-registry.js';
+import { ConversationHistory } from './conversation';
+import { AgentLoop } from './loop';
+import { ToolDispatcher } from './tool-dispatcher';
+import { ToolRegistry } from './tool-registry';
 
 export class Agent extends EventEmitter {
   private readonly conversation = new ConversationHistory();

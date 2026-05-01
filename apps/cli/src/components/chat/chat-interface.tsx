@@ -3,8 +3,8 @@ import type { AgentConfig, AgentEvent, RiskLevel } from '@ihn-agent/types';
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';
 
-import { Markdown } from '../ui/markdown.js';
-import { ConfirmationBlock, ThinkingBlock, ToolCallBlock, ToolResultBlock } from './blocks.js';
+import { Markdown } from '../ui/markdown';
+import { ConfirmationBlock, ThinkingBlock, ToolCallBlock, ToolResultBlock } from './blocks';
 
 export type CLIMessage = { type: 'user'; content: string } | AgentEvent;
 

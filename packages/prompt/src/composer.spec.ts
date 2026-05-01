@@ -1,7 +1,7 @@
-import { describe, expect, it } from '@jest/globals';
+import { describe, expect, it } from 'vitest';
 
-import { PromptComposer } from './composer.js';
-import { PromptRegistry } from './registry.js';
+import { PromptComposer } from './composer';
+import { PromptRegistry } from './registry';
 
 describe('PromptComposer', () => {
   it('should compose multiple blocks with variables', async () => {

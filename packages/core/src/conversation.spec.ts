@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { ConversationHistory } from './conversation.js';
+import { ConversationHistory } from './conversation';
 
 describe('ConversationHistory', () => {
   let history: ConversationHistory;

@@ -1,6 +1,6 @@
-import { beforeEach, describe, expect, it } from '@jest/globals';
+import { beforeEach, describe, expect, it } from 'vitest';
 
-import { StreamingHandler } from './streaming.js';
+import { StreamingHandler } from './streaming';
 
 describe('StreamingHandler', () => {
   let handler: StreamingHandler;

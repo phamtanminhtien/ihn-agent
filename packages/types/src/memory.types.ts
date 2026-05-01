@@ -1,4 +1,4 @@
-import type { ConversationMessage } from './message.types.js';
+import type { ConversationMessage } from './message.types';
 
 export interface WorkingMemory {
   /**

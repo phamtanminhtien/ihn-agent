@@ -1,12 +1,12 @@
 import type { ChatProvider, ProviderName } from '@ihn-agent/types';
 
-import { AnthropicProvider, type AnthropicProviderOptions } from './anthropic.js';
-import { GeminiProvider, type GeminiProviderOptions } from './gemini.js';
-import { OpenAIProvider, type OpenAIProviderOptions } from './openai.js';
+import { AnthropicProvider, type AnthropicProviderOptions } from './anthropic';
+import { GeminiProvider, type GeminiProviderOptions } from './gemini';
+import { OpenAIProvider, type OpenAIProviderOptions } from './openai';
 
-export * from './anthropic.js';
-export * from './gemini.js';
-export * from './openai.js';
+export * from './anthropic';
+export * from './gemini';
+export * from './openai';
 
 export interface CreateProviderOptions {
   name: ProviderName;

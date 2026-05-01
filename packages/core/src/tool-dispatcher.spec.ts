@@ -1,8 +1,8 @@
 import type { Tool, ToolContext } from '@ihn-agent/types';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { ToolDispatcher } from './tool-dispatcher.js';
-import { ToolRegistry } from './tool-registry.js';
+import { ToolDispatcher } from './tool-dispatcher';
+import { ToolRegistry } from './tool-registry';
 
 describe('ToolDispatcher', () => {
   let registry: ToolRegistry;
@@ -24,7 +24,7 @@ describe('ToolDispatcher', () => {
   });
 
   it('should dispatch to a registered tool', async () => {
-    const mockExecute = jest.fn<Tool['execute']>().mockResolvedValue('output_value');
+    const mockExecute = vi.fn<Tool['execute']>().mockResolvedValue('output_value');
     const mockTool: Tool = {
       name: 'test_tool',
       description: 'desc',

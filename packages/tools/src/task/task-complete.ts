@@ -1,7 +1,7 @@
 import type { ToolContext, ToolMetadata } from '@ihn-agent/types';
 import { z } from 'zod';
 
-import { BaseTool } from '../base-tool.js';
+import { BaseTool } from '../base-tool';
 
 const TaskCompleteSchema = z.object({
   summary: z.string().describe('A brief summary of what was accomplished'),

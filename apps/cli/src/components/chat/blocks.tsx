@@ -1,6 +1,6 @@
 import { Box, Text } from 'ink';
 
-import { Markdown } from '../ui/markdown.js';
+import { Markdown } from '../ui/markdown';
 
 export const ThinkingBlock = ({ content }: { content: string }) => (
   <Box paddingLeft={2} marginBottom={1} flexDirection="column">

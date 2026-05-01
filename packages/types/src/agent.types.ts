@@ -3,9 +3,9 @@ import type {
   ConversationMessage,
   StreamChunk,
   ToolResult,
-} from './message.types.js';
-import type { IPromptComposer, PromptVariables } from './prompt.types.js';
-import type { RiskLevel, ToolContext, ToolSchema } from './tool.types.js';
+} from './message.types';
+import type { IPromptComposer, PromptVariables } from './prompt.types';
+import type { RiskLevel, ToolContext, ToolSchema } from './tool.types';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
 export type AgentThinkingEvent = { type: 'thinking'; content: string };

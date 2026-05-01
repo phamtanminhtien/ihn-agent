@@ -6,8 +6,8 @@ import type { AgentConfig, ProviderName } from '@ihn-agent/types';
 import { Box, Text } from 'ink';
 import React, { useState } from 'react';
 
-import { SelectInput } from '../ui/select-input.js';
-import { TextInput } from '../ui/text-input.js';
+import { SelectInput } from '../ui/select-input';
+import { TextInput } from '../ui/text-input';
 
 interface OnboardingProps {
   onComplete: (config: AgentConfig) => void;

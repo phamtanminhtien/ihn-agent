@@ -1,4 +1,4 @@
-import type { WorkingMemory } from './memory.types.js';
+import type { WorkingMemory } from './memory.types';
 
 export type RiskLevel = 'safe' | 'low' | 'medium' | 'high';
 

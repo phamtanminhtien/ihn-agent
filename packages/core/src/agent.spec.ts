@@ -1,14 +1,14 @@
 import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/types';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, type Mocked, vi } from 'vitest';
 
-import { Agent } from './agent.js';
+import { Agent } from './agent';
 
 describe('Agent', () => {
-  let mockProvider: jest.Mocked<ChatProvider>;
+  let mockProvider: Mocked<ChatProvider>;
 
   beforeEach(() => {
     mockProvider = {
-      streamChat: jest.fn<ChatProvider['streamChat']>(),
+      streamChat: vi.fn<ChatProvider['streamChat']>(),
     };
   });
 
@@ -30,7 +30,7 @@ describe('Agent', () => {
     mockProvider.streamChat.mockResolvedValue(mockStream);
 
     const chunks: StreamChunk[] = [];
-    const eventHandler = jest.fn();
+    const eventHandler = vi.fn();
     agent.on('event', eventHandler);
 
     for await (const chunk of agent.run('Hi')) {
@@ -60,7 +60,7 @@ describe('Agent', () => {
 
     mockProvider.streamChat.mockResolvedValue(mockStream);
 
-    const eventHandler = jest.fn();
+    const eventHandler = vi.fn();
     agent.on('event', eventHandler);
 
     // Run the agent. It should stop after 1 turn because maxTurns=1

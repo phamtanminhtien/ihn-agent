@@ -1,19 +1,19 @@
 import type { ChatProvider, ProviderStream, StreamChunk } from '@ihn-agent/types';
-import { beforeEach, describe, expect, it, jest } from '@jest/globals';
+import { beforeEach, describe, expect, it, type Mocked, type MockInstance, vi } from 'vitest';
 
-import { AgentLoop } from './loop.js';
-import { ToolDispatcher } from './tool-dispatcher.js';
-import { ToolRegistry } from './tool-registry.js';
+import { AgentLoop } from './loop';
+import { ToolDispatcher } from './tool-dispatcher';
+import { ToolRegistry } from './tool-registry';
 
 describe('AgentLoop', () => {
-  let mockProvider: jest.Mocked<ChatProvider>;
+  let mockProvider: Mocked<ChatProvider>;
   let dispatcher: ToolDispatcher;
-  let dispatchOneMock: jest.SpiedFunction<ToolDispatcher['dispatchOne']>;
+  let dispatchOneMock: MockInstance<ToolDispatcher['dispatchOne']>;
   let loop: AgentLoop;
 
   beforeEach(() => {
     mockProvider = {
-      streamChat: jest.fn<ChatProvider['streamChat']>(),
+      streamChat: vi.fn<ChatProvider['streamChat']>(),
     };
     dispatcher = new ToolDispatcher(new ToolRegistry(), {
       workingMemory: {
@@ -24,7 +24,7 @@ describe('AgentLoop', () => {
       },
       signal: new AbortController().signal,
     });
-    dispatchOneMock = jest.spyOn(dispatcher, 'dispatchOne');
+    dispatchOneMock = vi.spyOn(dispatcher, 'dispatchOne');
     loop = new AgentLoop(mockProvider, dispatcher);
   });
 

@@ -11,8 +11,8 @@ import type { AgentConfig, EnvironmentSnapshot } from '@ihn-agent/types';
 import { Box, Text } from 'ink';
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { ChatInterface } from './components/chat/chat-interface.js';
-import { Onboarding } from './components/onboarding/onboarding.js';
+import { ChatInterface } from './components/chat/chat-interface';
+import { Onboarding } from './components/onboarding/onboarding';
 
 interface AppProps {
   initialConfig: AgentConfig | null;

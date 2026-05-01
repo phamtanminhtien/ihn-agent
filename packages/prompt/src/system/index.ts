@@ -1,4 +1,4 @@
-import { PromptRegistry } from '../registry.js';
+import { PromptRegistry } from '../registry';
 
 export const registerDefaultBlocks = (registry: PromptRegistry) => {
   registry.register({

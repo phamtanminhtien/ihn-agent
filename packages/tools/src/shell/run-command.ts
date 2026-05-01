@@ -3,7 +3,7 @@ import { exec } from 'child_process';
 import { promisify } from 'util';
 import { z } from 'zod';
 
-import { BaseTool } from '../base-tool.js';
+import { BaseTool } from '../base-tool';
 
 const execAsync = promisify(exec);
 

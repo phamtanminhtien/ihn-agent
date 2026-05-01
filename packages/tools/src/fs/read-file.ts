@@ -2,7 +2,7 @@ import type { ToolContext, ToolMetadata } from '@ihn-agent/types';
 import * as fs from 'fs/promises';
 import { z } from 'zod';
 
-import { BaseTool } from '../base-tool.js';
+import { BaseTool } from '../base-tool';
 
 const ReadFileSchema = z.object({
   path: z.string().describe('The path to the file to read'),
