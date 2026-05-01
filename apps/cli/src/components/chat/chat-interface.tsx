@@ -31,6 +31,7 @@ export const ChatInterface = ({
   const [loading, setLoading] = useState(false);
   const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [currentAgentText, setCurrentAgentText] = useState('');
+  const [activeTool, setActiveTool] = useState<string | null>(null);
   const [pendingConfirmation, setPendingConfirmation] = useState<{
     toolCallId: string;
     name: string;
@@ -38,6 +39,34 @@ export const ChatInterface = ({
     input: unknown;
     riskLevel: RiskLevel;
   } | null>(null);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [spinnerIndex, setSpinnerIndex] = useState(0);
+
+  const spinner = ['⠋', '⠙', '⠹', '⠸', '⠼', '⠴', '⠦', '⠧', '⠇', '⠏'];
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    let spinnerTimer: NodeJS.Timeout;
+
+    if (loading) {
+      const start = Date.now();
+      timer = setInterval(() => {
+        setElapsedTime(Math.floor((Date.now() - start) / 1000));
+      }, 1000);
+
+      spinnerTimer = setInterval(() => {
+        setSpinnerIndex((prev) => (prev + 1) % spinner.length);
+      }, 80);
+    } else {
+      setElapsedTime(0);
+      setActiveTool(null);
+    }
+
+    return () => {
+      clearInterval(timer);
+      clearInterval(spinnerTimer);
+    };
+  }, [loading]);
 
   useInput((inputChar, key) => {
     if (pendingConfirmation) {
@@ -202,6 +231,7 @@ export const ChatInterface = ({
       setMessages((prev) => [...prev, { type: 'error', message: errorMsg }]);
     } finally {
       setLoading(false);
+      setActiveTool(null);
     }
   };
 
@@ -209,6 +239,9 @@ export const ChatInterface = ({
     const onEvent = (event: AgentEvent) => {
       if (event.type === 'tool_result') {
         setMessages((prev) => [...prev, event]);
+        setActiveTool(null);
+      } else if (event.type === 'tool_start') {
+        setActiveTool(event.name);
       } else if (event.type === 'tool_confirmation') {
         setMessages((prev) => {
           const exists = prev.some(
@@ -224,8 +257,10 @@ export const ChatInterface = ({
           input: event.input,
           riskLevel: event.riskLevel,
         });
+        setActiveTool(null);
       } else if (event.type === 'error') {
         setMessages((prev) => [...prev, event]);
+        setActiveTool(null);
       }
     };
     agent.on('event', onEvent);
@@ -251,12 +286,11 @@ export const ChatInterface = ({
         borderColor="cyan"
       >
         <Box marginRight={3} flexDirection="column">
-          <Text color="cyan">{`      ▄██▄`}</Text>
-          <Text color="cyan">{`    ▄██████▄`}</Text>
-          <Text color="blue">{`  ▄██████████▄`}</Text>
-          <Text color="blue">{`  ▀██████████▀`}</Text>
-          <Text color="cyan">{`    ▀██████▀`}</Text>
-          <Text color="cyan">{`      ▀██▀`}</Text>
+          <Text color="cyan">{`    __  __ _   __`}</Text>
+          <Text color="cyan">{`   / / / /| | / /`}</Text>
+          <Text color="blue">{`  / /_/ / |  / / `}</Text>
+          <Text color="blue">{` / __  /  | / /  `}</Text>
+          <Text color="cyan">{`/_/ /_/   |_/   `}</Text>
         </Box>
         <Box flexDirection="column">
           <Box flexDirection="row">
@@ -359,11 +393,13 @@ export const ChatInterface = ({
             </Box>
           </Box>
         )}
-        {loading && !currentAgentText && (
-          <Box paddingLeft={1}>
+        {loading && (
+          <Box paddingLeft={1} flexDirection="row">
+            <Text color="yellow">{spinner[spinnerIndex]} </Text>
             <Text italic color="gray">
-              Agent is working...
+              {activeTool ? `Executing ${activeTool}...` : 'Agent is working...'}
             </Text>
+            <Text color="cyan"> ({elapsedTime}s)</Text>
           </Box>
         )}
       </Box>
