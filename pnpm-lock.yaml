@@ -87,6 +87,9 @@ importers:
       '@ihn-agent/core':
         specifier: workspace:*
         version: link:../../packages/core
+      '@ihn-agent/prompt':
+        specifier: workspace:*
+        version: link:../../packages/prompt
       '@ihn-agent/providers':
         specifier: workspace:*
         version: link:../../packages/providers
@@ -124,6 +127,15 @@ importers:
       '@ihn-agent/types':
         specifier: workspace:*
         version: link:../types
+
+  packages/prompt:
+    dependencies:
+      '@ihn-agent/types':
+        specifier: workspace:*
+        version: link:../types
+      zod:
+        specifier: ^3.23.8
+        version: 3.25.76
 
   packages/providers:
     dependencies:

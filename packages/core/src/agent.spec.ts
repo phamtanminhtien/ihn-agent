@@ -80,4 +80,57 @@ describe('Agent', () => {
       })
     );
   });
+
+  it('should apply system prompt', async () => {
+    const systemPrompt = 'You are a helpful assistant';
+    const agent = new Agent({ provider: mockProvider, systemPrompt });
+
+    const mockStream: ProviderStream = {
+      async *[Symbol.asyncIterator]() {
+        yield { type: 'text', content: 'Response' };
+      },
+    };
+
+    mockProvider.streamChat.mockResolvedValue(mockStream);
+
+    for await (const _ of agent.run('Hi')) {
+      // Consume
+    }
+
+    expect(mockProvider.streamChat).toHaveBeenCalledWith(
+      expect.arrayContaining([{ role: 'system', content: systemPrompt }]),
+      expect.any(Array)
+    );
+  });
+
+  it('should apply system prompt even if user message exists', async () => {
+    const systemPrompt = 'You are a helpful assistant';
+    const agent = new Agent({ provider: mockProvider, systemPrompt });
+
+    const mockStream: ProviderStream = {
+      async *[Symbol.asyncIterator]() {
+        yield { type: 'text', content: 'Response' };
+      },
+    };
+    mockProvider.streamChat.mockResolvedValue(mockStream);
+
+    // First run - should add system prompt
+    for await (const _ of agent.run('Hi')) {
+      // Consume
+    }
+
+    // Second run - should NOT add another system prompt
+    for await (const _ of agent.run('Hello again')) {
+      // Consume
+    }
+
+    // Should only have ONE system message in the last call
+    const lastCall =
+      mockProvider.streamChat.mock.calls[mockProvider.streamChat.mock.calls.length - 1];
+    expect(lastCall).toBeDefined();
+    const messages = lastCall![0];
+    const systemMessages = messages.filter((m: any) => m.role === 'system');
+    expect(systemMessages.length).toBe(1);
+    expect(systemMessages[0]?.content).toBe(systemPrompt);
+  });
 });

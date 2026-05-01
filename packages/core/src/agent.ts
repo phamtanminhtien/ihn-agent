@@ -21,7 +21,7 @@ export class Agent extends EventEmitter {
   private readonly loop: AgentLoop;
   private readonly maxTurns: number;
 
-  constructor(options: AgentOptions) {
+  constructor(private readonly options: AgentOptions) {
     super();
 
     const dispatcher = new ToolDispatcher(
@@ -42,6 +42,21 @@ export class Agent extends EventEmitter {
     this.maxTurns = options.maxTurns ?? 8;
   }
 
+  private async ensureSystemPrompt(): Promise<void> {
+    const hasSystem = this.conversation.messages.some((m) => m.role === 'system');
+    if (hasSystem) return;
+
+    const { systemPrompt, promptVariables } = this.options;
+    if (!systemPrompt) return;
+
+    if (typeof systemPrompt === 'string') {
+      this.conversation.addSystem(systemPrompt);
+    } else {
+      const content = await systemPrompt.compose(promptVariables ?? {});
+      this.conversation.addSystem(content);
+    }
+  }
+
   registerTool(tool: Tool): void {
     this.registry.register(tool);
   }
@@ -58,6 +73,8 @@ export class Agent extends EventEmitter {
     userMessage?: string,
     options?: { approvedToolCallIds?: Set<string> | undefined }
   ): AsyncGenerator<StreamChunk> {
+    await this.ensureSystemPrompt();
+
     if (userMessage) {
       this.conversation.addUser(userMessage);
     }

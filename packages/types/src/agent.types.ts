@@ -4,6 +4,7 @@ import type {
   StreamChunk,
   ToolResult,
 } from './message.types.js';
+import type { IPromptComposer, PromptVariables } from './prompt.types.js';
 import type { RiskLevel, ToolContext, ToolSchema } from './tool.types.js';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
@@ -66,4 +67,13 @@ export interface AgentOptions {
    * Set of tool call IDs that have been approved by the user
    */
   approvedToolCallIds?: Set<string>;
+  /**
+   * Optional system prompt to set the agent's persona and rules.
+   * Can be a static string or an IPromptComposer.
+   */
+  systemPrompt?: string | IPromptComposer;
+  /**
+   * Variables to pass to the prompt composer if systemPrompt is an IPromptComposer.
+   */
+  promptVariables?: PromptVariables;
 }

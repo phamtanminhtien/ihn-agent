@@ -1,9 +1,15 @@
 import { Agent } from '@ihn-agent/core';
+import {
+  ContextManager,
+  PromptComposer,
+  PromptRegistry,
+  registerDefaultBlocks,
+} from '@ihn-agent/prompt';
 import { createProvider } from '@ihn-agent/providers';
 import { builtInTools } from '@ihn-agent/tools';
-import type { AgentConfig } from '@ihn-agent/types';
+import type { AgentConfig, EnvironmentSnapshot } from '@ihn-agent/types';
 import { Box, Text } from 'ink';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 
 import { ChatInterface } from './components/chat/chat-interface.js';
 import { Onboarding } from './components/onboarding/onboarding.js';
@@ -15,9 +21,15 @@ interface AppProps {
 
 export const App = ({ initialConfig, initialPrompt }: AppProps) => {
   const [config, setConfig] = useState<AgentConfig | null>(initialConfig);
+  const [envContext, setEnvContext] = useState<EnvironmentSnapshot | null>(null);
+
+  useEffect(() => {
+    const manager = new ContextManager();
+    manager.getSnapshot().then(setEnvContext);
+  }, []);
 
   const agent = useMemo(() => {
-    if (!config) return null;
+    if (!config || !envContext) return null;
     try {
       const provider = createProvider({
         name: config.provider,
@@ -26,9 +38,18 @@ export const App = ({ initialConfig, initialPrompt }: AppProps) => {
         baseUrl: config.baseUrl,
       });
 
+      const registry = new PromptRegistry();
+      registerDefaultBlocks(registry);
+      const composer = new PromptComposer(registry);
+      composer.addBlock('persona/base').addBlock('rules/tool-usage').addBlock('rules/security');
+
       const a = new Agent({
         provider,
         maxTurns: config.maxTurns,
+        systemPrompt: composer,
+        promptVariables: {
+          ...envContext,
+        },
       });
 
       for (const tool of builtInTools) {
@@ -39,7 +60,7 @@ export const App = ({ initialConfig, initialPrompt }: AppProps) => {
       console.error('Failed to create agent:', e);
       return null;
     }
-  }, [config]);
+  }, [config, envContext]);
 
   if (!config) {
     return <Onboarding onComplete={setConfig} />;

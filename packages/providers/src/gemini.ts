@@ -24,9 +24,12 @@ export class GeminiProvider implements ChatProvider {
     messages: readonly ConversationMessage[],
     tools: readonly ToolSchema[]
   ): Promise<ProviderStream> {
-    const model = this.client.getGenerativeModel({ model: this.model });
-
     const systemMessage = messages.find((m) => m.role === 'system');
+    const model = this.client.getGenerativeModel({
+      model: this.model,
+      ...(systemMessage?.content ? { systemInstruction: systemMessage.content } : {}),
+    });
+
     const history: Content[] = messages
       .filter((m) => m.role !== 'system')
       .map((msg) => {
@@ -81,10 +84,6 @@ export class GeminiProvider implements ChatProvider {
     const body: any = {
       contents: history,
     };
-
-    if (systemMessage?.content) {
-      body.systemInstruction = systemMessage.content;
-    }
 
     if (geminiTools) {
       body.tools = geminiTools;
