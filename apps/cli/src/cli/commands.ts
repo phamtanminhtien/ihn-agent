@@ -83,6 +83,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
       ]);
     },
   },
+
   {
     name: '/exit',
     description: 'Exit the application',

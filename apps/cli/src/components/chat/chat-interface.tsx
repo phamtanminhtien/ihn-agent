@@ -242,10 +242,36 @@ export const ChatInterface = ({
 
   return (
     <Box flexDirection="column" padding={1}>
-      <Box marginBottom={1} borderStyle="double" borderColor="cyan" paddingX={1}>
-        <Text bold color="cyan">
-          IHN Agent CLI | {config.provider} | {config.model}
-        </Text>
+      <Box
+        marginBottom={1}
+        paddingX={1}
+        flexDirection="row"
+        alignItems="center"
+        borderStyle="round"
+        borderColor="cyan"
+      >
+        <Box marginRight={3} flexDirection="column">
+          <Text color="cyan">{`      ▄██▄`}</Text>
+          <Text color="cyan">{`    ▄██████▄`}</Text>
+          <Text color="blue">{`  ▄██████████▄`}</Text>
+          <Text color="blue">{`  ▀██████████▀`}</Text>
+          <Text color="cyan">{`    ▀██████▀`}</Text>
+          <Text color="cyan">{`      ▀██▀`}</Text>
+        </Box>
+        <Box flexDirection="column">
+          <Box flexDirection="row">
+            <Text bold color="cyan">
+              IHN Agent
+            </Text>
+            <Text dimColor> v1.0.0</Text>
+          </Box>
+          <Text>
+            {config.provider} · {config.model}
+          </Text>
+          <Text dimColor italic>
+            {process.cwd()}
+          </Text>
+        </Box>
       </Box>
 
       <Box flexDirection="column" marginBottom={1}>
@@ -322,6 +348,7 @@ export const ChatInterface = ({
               return null;
           }
         })}
+
         {currentAgentText && (
           <Box flexDirection="column">
             <Text bold color="blue">
@@ -341,51 +368,53 @@ export const ChatInterface = ({
         )}
       </Box>
 
-      {!pendingConfirmation ? (
-        <Box borderStyle="round" paddingX={1} borderColor="yellow">
-          <Text color="yellow" bold>
-            {'> '}
-          </Text>
-          <Text>{input}</Text>
-          <Text color="yellow">█</Text>
-        </Box>
-      ) : (
-        <Box borderStyle="round" paddingX={1} borderColor="magenta">
-          <Text color="magenta" bold>
-            ?{' '}
-          </Text>
-          <Text italic>Waiting for approval... (y/n)</Text>
-        </Box>
-      )}
+      <Box flexDirection="column">
+        {!pendingConfirmation ? (
+          <Box borderStyle="round" paddingX={1} borderColor="yellow">
+            <Text color="yellow" bold>
+              {'> '}
+            </Text>
+            <Text>{input}</Text>
+            <Text color="yellow">█</Text>
+          </Box>
+        ) : (
+          <Box borderStyle="round" paddingX={1} borderColor="magenta">
+            <Text color="magenta" bold>
+              ?{' '}
+            </Text>
+            <Text italic>Waiting for approval... (y/n)</Text>
+          </Box>
+        )}
 
-      {input.startsWith('/') && (
-        <Box flexDirection="column" paddingX={1} marginTop={0}>
-          {SLASH_COMMANDS.filter((c) => c.name.startsWith(searchQuery.toLowerCase())).map(
-            (c, i) => {
-              const suggestions = SLASH_COMMANDS.filter((s) =>
-                s.name.startsWith(searchQuery.toLowerCase())
-              );
-              const isSelected =
-                i === suggestionIndex ||
-                (suggestionIndex === -1 && suggestions.length === 1 && i === 0);
-              return (
-                <Box key={c.name} flexDirection="row">
-                  <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
-                    {isSelected ? '→ ' : '  '}
-                    {c.name.padEnd(10)}
-                  </Text>
-                  <Text color="dimColor"> - {c.description}</Text>
-                </Box>
-              );
-            }
-          )}
-        </Box>
-      )}
+        {input.startsWith('/') && (
+          <Box flexDirection="column" paddingX={1} marginTop={0}>
+            {SLASH_COMMANDS.filter((c) => c.name.startsWith(searchQuery.toLowerCase())).map(
+              (c, i) => {
+                const suggestions = SLASH_COMMANDS.filter((s) =>
+                  s.name.startsWith(searchQuery.toLowerCase())
+                );
+                const isSelected =
+                  i === suggestionIndex ||
+                  (suggestionIndex === -1 && suggestions.length === 1 && i === 0);
+                return (
+                  <Box key={c.name} flexDirection="row">
+                    <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
+                      {isSelected ? '→ ' : '  '}
+                      {c.name.padEnd(10)}
+                    </Text>
+                    <Text color="dimColor"> - {c.description}</Text>
+                  </Box>
+                );
+              }
+            )}
+          </Box>
+        )}
 
-      <Box marginTop={1}>
-        <Text dimColor italic>
-          Press Enter to send, Ctrl+C to exit.
-        </Text>
+        <Box marginTop={1} paddingX={1}>
+          <Text dimColor italic>
+            Press Enter to send, Ctrl+C to exit.
+          </Text>
+        </Box>
       </Box>
     </Box>
   );
