@@ -51,6 +51,7 @@ export class ConfigLoader {
     const apiKey =
       process.env.ANTHROPIC_API_KEY || process.env.OPENAI_API_KEY || process.env.GEMINI_API_KEY;
     if (apiKey) config.apiKey = apiKey;
+    if (process.env.IHN_BASE_URL) config.baseUrl = process.env.IHN_BASE_URL;
 
     if (process.env.IHN_MAX_TURNS) config.maxTurns = parseInt(process.env.IHN_MAX_TURNS, 10);
     if (process.env.IHN_AUTO_APPROVE) config.autoApprove = process.env.IHN_AUTO_APPROVE === 'true';

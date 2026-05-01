@@ -1,4 +1,5 @@
 import type {
+  AssistantMessage,
   ChatProvider,
   ConversationMessage,
   LoopIterationOutput,
@@ -18,23 +19,43 @@ export class AgentLoop {
 
   async runOnce(
     messages: readonly ConversationMessage[],
-    tools: readonly ToolSchema[]
+    tools: readonly ToolSchema[],
+    approvedToolCallIds: Set<string> = new Set(),
+    resumeMessage?: AssistantMessage
   ): Promise<LoopIterationOutput> {
-    const stream = await this.provider.streamChat(messages, tools);
-    const handler = new StreamingHandler();
+    let assistantMessage: AssistantMessage;
     const chunks: StreamChunk[] = [];
 
-    for await (const chunk of stream) {
-      handler.consume(chunk);
-      chunks.push(chunk);
-    }
+    if (resumeMessage) {
+      assistantMessage = resumeMessage;
+    } else {
+      const stream = await this.provider.streamChat(messages, tools);
+      const handler = new StreamingHandler();
 
-    const assistantMessage = handler.finalMessage();
+      for await (const chunk of stream) {
+        handler.consume(chunk);
+        chunks.push(chunk);
+      }
+
+      assistantMessage = handler.finalMessage();
+    }
     const toolResults: ToolResult[] = [];
 
     for (const call of assistantMessage.toolCalls ?? []) {
-      const result = await this.dispatcher.dispatchOne(call);
+      // Skip if result already exists in messages
+      const exists = messages.some(
+        (m) => m.role === 'tool_result' && 'toolCallId' in m && m.toolCallId === call.id
+      );
+      if (exists) {
+        continue;
+      }
+
+      const result = await this.dispatcher.dispatchOne(call, approvedToolCallIds);
       toolResults.push(result);
+
+      if (result.status === 'pending') {
+        break;
+      }
     }
 
     return { chunks, assistantMessage, toolResults };

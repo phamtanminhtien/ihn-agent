@@ -2,6 +2,8 @@ export type ConversationRole = 'system' | 'user' | 'assistant' | 'tool_result';
 
 export type StopReason = 'end_turn' | 'tool_use';
 
+export type ToolStatus = 'success' | 'error' | 'pending' | 'denied';
+
 export interface ToolCall {
   id: string;
   name: string;
@@ -13,6 +15,7 @@ export interface ToolResult {
   name: string;
   content: string;
   isError: boolean;
+  status: ToolStatus;
 }
 
 export interface BaseMessage {

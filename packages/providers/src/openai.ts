@@ -8,7 +8,8 @@ import OpenAI from 'openai';
 
 export interface OpenAIProviderOptions {
   apiKey: string;
-  model?: string;
+  model?: string | undefined;
+  baseUrl?: string | undefined;
 }
 
 export class OpenAIProvider implements ChatProvider {
@@ -16,7 +17,10 @@ export class OpenAIProvider implements ChatProvider {
   private readonly model: string;
 
   constructor(options: OpenAIProviderOptions) {
-    this.client = new OpenAI({ apiKey: options.apiKey });
+    this.client = new OpenAI({
+      apiKey: options.apiKey,
+      baseURL: options.baseUrl,
+    });
     this.model = options.model ?? 'gpt-4o';
   }
 

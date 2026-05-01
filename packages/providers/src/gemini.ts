@@ -8,7 +8,7 @@ import type {
 
 export interface GeminiProviderOptions {
   apiKey: string;
-  model?: string;
+  model?: string | undefined;
 }
 
 export class GeminiProvider implements ChatProvider {

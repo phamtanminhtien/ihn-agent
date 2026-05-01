@@ -3,6 +3,7 @@ import { EventEmitter } from 'node:events';
 import type {
   AgentEvent,
   AgentOptions,
+  AssistantMessage,
   StreamChunk,
   Tool,
   ToolResult,
@@ -23,16 +24,20 @@ export class Agent extends EventEmitter {
   constructor(options: AgentOptions) {
     super();
 
-    const dispatcher = new ToolDispatcher(this.registry, {
-      workingMemory: {
-        plan: [],
-        openFiles: [],
-        variables: {},
-        completedSteps: [],
+    const dispatcher = new ToolDispatcher(
+      this.registry,
+      {
+        workingMemory: {
+          plan: [],
+          openFiles: [],
+          variables: {},
+          completedSteps: [],
+        },
+        signal: new AbortController().signal,
+        ...options.toolContext,
       },
-      signal: new AbortController().signal,
-      ...options.toolContext,
-    });
+      options.approvedToolCallIds
+    );
     this.loop = new AgentLoop(options.provider, dispatcher);
     this.maxTurns = options.maxTurns ?? 8;
   }
@@ -49,15 +54,33 @@ export class Agent extends EventEmitter {
     return this.conversation.messages;
   }
 
-  async *run(userMessage: string): AsyncGenerator<StreamChunk> {
-    this.conversation.addUser(userMessage);
-    let turns = 0;
+  async *run(
+    userMessage?: string,
+    options?: { approvedToolCallIds?: Set<string> | undefined }
+  ): AsyncGenerator<StreamChunk> {
+    if (userMessage) {
+      this.conversation.addUser(userMessage);
+    }
 
+    const lastMsg = this.conversation.messages[this.conversation.messages.length - 1];
+    let isResuming =
+      !userMessage &&
+      lastMsg?.role === 'assistant' &&
+      'toolCalls' in lastMsg &&
+      (lastMsg.toolCalls?.length ?? 0) > 0;
+
+    let turns = 0;
     while (turns < this.maxTurns) {
       turns += 1;
+
+      const resumeMessage = isResuming ? (lastMsg as AssistantMessage) : undefined;
+      isResuming = false;
+
       const iteration = await this.loop.runOnce(
         this.conversation.messages,
-        this.registry.getSchemas()
+        this.registry.getSchemas(),
+        options?.approvedToolCallIds,
+        resumeMessage
       );
 
       for (const chunk of iteration.chunks) {
@@ -76,16 +99,38 @@ export class Agent extends EventEmitter {
         yield chunk;
       }
 
-      this.conversation.addAssistant(iteration.assistantMessage);
+      if (!resumeMessage) {
+        this.conversation.addAssistant(iteration.assistantMessage);
+      }
+
+      const pendingResult = iteration.toolResults.find((r) => r.status === 'pending');
+      const finishedResults = iteration.toolResults.filter((r) => r.status !== 'pending');
+
+      if (finishedResults.length > 0) {
+        this.conversation.addToolResults(finishedResults);
+        for (const result of finishedResults) {
+          this.emitToolResult(result);
+        }
+      }
+
+      if (pendingResult) {
+        const tool = this.registry.get(pendingResult.name);
+        this.emitEvent({
+          type: 'tool_confirmation',
+          toolCallId: pendingResult.toolCallId,
+          name: pendingResult.name,
+          description: tool?.description ?? '',
+          riskLevel: tool?.metadata.riskLevel ?? 'high',
+          input: iteration.assistantMessage.toolCalls?.find(
+            (c) => c.id === pendingResult.toolCallId
+          )?.input,
+        });
+        return;
+      }
 
       if (iteration.toolResults.length === 0) {
         this.emitEvent({ type: 'turn_end' });
         return;
-      }
-
-      this.conversation.addToolResults(iteration.toolResults);
-      for (const result of iteration.toolResults) {
-        this.emitToolResult(result);
       }
     }
 

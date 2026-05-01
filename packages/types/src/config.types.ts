@@ -20,6 +20,11 @@ export interface AgentConfig {
   apiKey: string;
 
   /**
+   * Optional base URL for the API (e.g. for proxy or self-hosted models)
+   */
+  baseUrl?: string | undefined;
+
+  /**
    * Context window size cap (token limit)
    * @default 100000
    */

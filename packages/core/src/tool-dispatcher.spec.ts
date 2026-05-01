@@ -50,6 +50,7 @@ describe('ToolDispatcher', () => {
       name: 'test_tool',
       isError: false,
       content: 'output_value',
+      status: 'success',
     });
     expect(mockExecute).toHaveBeenCalledWith({ param: 'value' }, ctx);
   });
@@ -114,5 +115,58 @@ describe('ToolDispatcher', () => {
     });
 
     expect(result.content).toBe('{"foo":"bar"}');
+  });
+
+  it('should require confirmation if metadata specifies it', async () => {
+    const mockTool: Tool = {
+      name: 'sensitive_tool',
+      description: 'desc',
+      inputSchema: {},
+      metadata: {
+        requiresConfirmation: true,
+        riskLevel: 'high',
+        cacheable: false,
+        retryable: false,
+      },
+      execute: async () => 'secret',
+    };
+    registry.register(mockTool);
+
+    const result = await dispatcher.dispatchOne({
+      id: 'call_1',
+      name: 'sensitive_tool',
+      input: {},
+    });
+
+    expect(result.status).toBe('pending');
+    expect(result.content).toBe('Approval required');
+  });
+
+  it('should execute sensitive tool if approved', async () => {
+    const mockTool: Tool = {
+      name: 'sensitive_tool',
+      description: 'desc',
+      inputSchema: {},
+      metadata: {
+        requiresConfirmation: true,
+        riskLevel: 'high',
+        cacheable: false,
+        retryable: false,
+      },
+      execute: async () => 'secret',
+    };
+    registry.register(mockTool);
+
+    const result = await dispatcher.dispatchOne(
+      {
+        id: 'call_1',
+        name: 'sensitive_tool',
+        input: {},
+      },
+      new Set(['call_1'])
+    );
+
+    expect(result.status).toBe('success');
+    expect(result.content).toBe('secret');
   });
 });

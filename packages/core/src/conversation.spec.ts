@@ -46,6 +46,7 @@ describe('ConversationHistory', () => {
         name: 'tool1',
         content: 'result1',
         isError: false,
+        status: 'success',
       },
     ]);
     expect(history.messages).toHaveLength(1);

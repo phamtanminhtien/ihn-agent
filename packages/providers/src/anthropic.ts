@@ -9,7 +9,8 @@ import type {
 
 export interface AnthropicProviderOptions {
   apiKey: string;
-  model?: string;
+  model?: string | undefined;
+  baseUrl?: string | undefined;
 }
 
 export class AnthropicProvider implements ChatProvider {
@@ -17,7 +18,10 @@ export class AnthropicProvider implements ChatProvider {
   private readonly model: string;
 
   constructor(options: AnthropicProviderOptions) {
-    this.client = new Anthropic({ apiKey: options.apiKey });
+    this.client = new Anthropic({
+      apiKey: options.apiKey,
+      baseURL: options.baseUrl,
+    });
     this.model = options.model ?? 'claude-3-5-sonnet-latest';
   }
 

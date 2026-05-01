@@ -60,16 +60,20 @@ describe('AgentLoop', () => {
       name: 'tool1',
       content: 'result1',
       isError: false,
+      status: 'success',
     });
 
     const result = await loop.runOnce([], []);
 
     expect(result.assistantMessage.toolCalls).toHaveLength(1);
-    expect(dispatchOneMock).toHaveBeenCalledWith({
-      id: 'call_1',
-      name: 'tool1',
-      input: {},
-    });
+    expect(dispatchOneMock).toHaveBeenCalledWith(
+      {
+        id: 'call_1',
+        name: 'tool1',
+        input: {},
+      },
+      expect.any(Set)
+    );
     expect(result.toolResults).toHaveLength(1);
     expect(result.toolResults[0]!.content).toBe('result1');
   });

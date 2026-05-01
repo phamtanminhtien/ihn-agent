@@ -4,7 +4,7 @@ import type {
   StreamChunk,
   ToolResult,
 } from './message.types.js';
-import type { ToolContext, ToolSchema } from './tool.types.js';
+import type { RiskLevel, ToolContext, ToolSchema } from './tool.types.js';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
 export type AgentThinkingEvent = { type: 'thinking'; content: string };
@@ -15,6 +15,15 @@ export type AgentToolResultEvent = {
   output: unknown;
   isError: boolean;
 };
+
+export type AgentToolConfirmationEvent = {
+  type: 'tool_confirmation';
+  toolCallId: string;
+  name: string;
+  description: string;
+  input: unknown;
+  riskLevel: RiskLevel;
+};
 export type AgentTurnEndEvent = { type: 'turn_end' };
 export type AgentErrorEvent = { type: 'error'; message: string };
 
@@ -23,6 +32,7 @@ export type AgentEvent =
   | AgentThinkingEvent
   | AgentToolStartEvent
   | AgentToolResultEvent
+  | AgentToolConfirmationEvent
   | AgentTurnEndEvent
   | AgentErrorEvent;
 
@@ -35,6 +45,11 @@ export interface ChatProvider {
     messages: readonly ConversationMessage[],
     tools: readonly ToolSchema[]
   ): Promise<ProviderStream>;
+
+  /**
+   * Optional method to list available models for this provider
+   */
+  listModels?(): Promise<string[]>;
 }
 
 export interface LoopIterationOutput {
@@ -47,4 +62,8 @@ export interface AgentOptions {
   provider: ChatProvider;
   toolContext?: ToolContext;
   maxTurns?: number;
+  /**
+   * Set of tool call IDs that have been approved by the user
+   */
+  approvedToolCallIds?: Set<string>;
 }

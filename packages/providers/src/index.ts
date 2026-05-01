@@ -11,20 +11,23 @@ export * from './openai.js';
 export interface CreateProviderOptions {
   name: ProviderName;
   apiKey: string;
-  model?: string;
+  model?: string | undefined;
+  baseUrl?: string | undefined;
 }
 
 export function createProvider(options: CreateProviderOptions): ChatProvider {
-  const { name, apiKey, model } = options;
+  const { name, apiKey, model, baseUrl } = options;
   switch (name) {
     case 'anthropic': {
       const providerOptions: AnthropicProviderOptions = { apiKey };
       if (model) providerOptions.model = model;
+      if (baseUrl) providerOptions.baseUrl = baseUrl;
       return new AnthropicProvider(providerOptions);
     }
     case 'openai': {
       const providerOptions: OpenAIProviderOptions = { apiKey };
       if (model) providerOptions.model = model;
+      if (baseUrl) providerOptions.baseUrl = baseUrl;
       return new OpenAIProvider(providerOptions);
     }
     case 'gemini': {

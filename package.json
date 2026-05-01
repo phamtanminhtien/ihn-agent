@@ -13,6 +13,7 @@
     "type-check": "pnpm -r type-check",
     "cli:dev": "tsx watch apps/cli/src/index.tsx",
     "cli:build": "pnpm --filter @ihn-agent/cli build",
+    "cli:start": "pnpm --filter @ihn-agent/cli start",
     "build": "pnpm -r build"
   },
   "keywords": [],

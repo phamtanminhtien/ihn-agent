@@ -10,6 +10,7 @@ export const AgentConfigSchema = z.object({
   provider: ProviderNameSchema.default('anthropic'),
   model: z.string().min(1),
   apiKey: z.string().min(1),
+  baseUrl: z.string().url().optional(),
   maxContextTokens: z.number().int().positive().default(100_000),
   maxTurns: z.number().int().positive().default(50),
   autoApprove: z.boolean().default(false),
