@@ -9,6 +9,8 @@ describe('Agent', () => {
   beforeEach(() => {
     mockProvider = {
       streamChat: vi.fn<ChatProvider['streamChat']>(),
+      setModel: vi.fn(),
+      getModel: vi.fn().mockReturnValue('test-model'),
     };
   });
 

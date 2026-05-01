@@ -14,6 +14,8 @@ describe('AgentLoop', () => {
   beforeEach(() => {
     mockProvider = {
       streamChat: vi.fn<ChatProvider['streamChat']>(),
+      setModel: vi.fn(),
+      getModel: vi.fn().mockReturnValue('test-model'),
     };
     dispatcher = new ToolDispatcher(new ToolRegistry(), {
       workingMemory: {
@@ -37,8 +39,16 @@ describe('AgentLoop', () => {
     };
     mockProvider.streamChat.mockResolvedValue(mockStream);
 
-    const result = await loop.runOnce([], []);
+    const iterator = loop.runOnce([], []);
+    const chunks: StreamChunk[] = [];
+    let next = await iterator.next();
+    while (!next.done) {
+      chunks.push(next.value);
+      next = await iterator.next();
+    }
+    const result = next.value;
 
+    expect(chunks).toEqual(mockChunks);
     expect(result.chunks).toEqual(mockChunks);
     expect(result.assistantMessage.content).toBe('Response');
     expect(result.toolResults).toEqual([]);
@@ -63,7 +73,12 @@ describe('AgentLoop', () => {
       status: 'success',
     });
 
-    const result = await loop.runOnce([], []);
+    const iterator = loop.runOnce([], []);
+    let next = await iterator.next();
+    while (!next.done) {
+      next = await iterator.next();
+    }
+    const result = next.value;
 
     expect(result.assistantMessage.toolCalls).toHaveLength(1);
     expect(dispatchOneMock).toHaveBeenCalledWith(

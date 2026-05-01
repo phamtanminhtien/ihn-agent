@@ -17,12 +17,12 @@ export class AgentLoop {
     private readonly dispatcher: ToolDispatcher
   ) {}
 
-  async runOnce(
+  async *runOnce(
     messages: readonly ConversationMessage[],
     tools: readonly ToolSchema[],
     approvedToolCallIds: Set<string> = new Set(),
     resumeMessage?: AssistantMessage
-  ): Promise<LoopIterationOutput> {
+  ): AsyncGenerator<StreamChunk, LoopIterationOutput> {
     let assistantMessage: AssistantMessage;
     const chunks: StreamChunk[] = [];
 
@@ -35,6 +35,7 @@ export class AgentLoop {
       for await (const chunk of stream) {
         handler.consume(chunk);
         chunks.push(chunk);
+        yield chunk;
       }
 
       assistantMessage = handler.finalMessage();

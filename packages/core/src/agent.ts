@@ -105,14 +105,16 @@ export class Agent extends EventEmitter {
       const resumeMessage = isResuming ? (lastMsg as AssistantMessage) : undefined;
       isResuming = false;
 
-      const iteration = await this.loop.runOnce(
+      const iterator = this.loop.runOnce(
         this.conversation.messages,
         this.registry.getSchemas(),
         options?.approvedToolCallIds,
         resumeMessage
       );
 
-      for (const chunk of iteration.chunks) {
+      let next = await iterator.next();
+      while (!next.done) {
+        const chunk = next.value;
         if (chunk.type === 'text') {
           this.emitEvent({ type: 'text_delta', content: chunk.content });
         } else if (chunk.type === 'thinking') {
@@ -126,7 +128,10 @@ export class Agent extends EventEmitter {
         }
 
         yield chunk;
+        next = await iterator.next();
       }
+
+      const iteration = next.value;
 
       if (!resumeMessage) {
         this.conversation.addAssistant(iteration.assistantMessage);
