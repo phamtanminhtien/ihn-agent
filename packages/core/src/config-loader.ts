@@ -2,6 +2,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
+import type { AgentConfig } from '@ihn-agent/types';
+
 import { AgentConfigSchema } from './config.schema';
 
 /**
@@ -57,5 +59,23 @@ export class ConfigLoader {
     if (process.env.IHN_AUTO_APPROVE) config.autoApprove = process.env.IHN_AUTO_APPROVE === 'true';
 
     return config;
+  }
+
+  static save(config: AgentConfig): void {
+    const homeConfigDir = path.join(os.homedir(), '.ihn');
+    const homeConfigPath = path.join(homeConfigDir, 'config.json');
+    const localConfigPath = path.join(process.cwd(), '.ihn', 'config.json');
+
+    const configPath = fs.existsSync(localConfigPath) ? localConfigPath : homeConfigPath;
+    const configDir = path.dirname(configPath);
+
+    try {
+      if (!fs.existsSync(configDir)) {
+        fs.mkdirSync(configDir, { recursive: true });
+      }
+      fs.writeFileSync(configPath, JSON.stringify(config, null, 2));
+    } catch (error) {
+      console.error(`Failed to save config file at ${configPath}:`, error);
+    }
   }
 }

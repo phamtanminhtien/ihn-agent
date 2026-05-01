@@ -14,7 +14,7 @@ export interface OpenAIProviderOptions {
 
 export class OpenAIProvider implements ChatProvider {
   private readonly client: OpenAI;
-  private readonly model: string;
+  private model: string;
 
   constructor(options: OpenAIProviderOptions) {
     this.client = new OpenAI({
@@ -22,6 +22,14 @@ export class OpenAIProvider implements ChatProvider {
       baseURL: options.baseUrl,
     });
     this.model = options.model ?? 'gpt-4o';
+  }
+
+  setModel(model: string): void {
+    this.model = model;
+  }
+
+  getModel(): string {
+    return this.model;
   }
 
   async streamChat(

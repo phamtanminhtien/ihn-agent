@@ -13,11 +13,19 @@ export interface GeminiProviderOptions {
 
 export class GeminiProvider implements ChatProvider {
   private readonly client: GoogleGenerativeAI;
-  private readonly model: string;
+  private model: string;
 
   constructor(options: GeminiProviderOptions) {
     this.client = new GoogleGenerativeAI(options.apiKey);
     this.model = options.model ?? 'gemini-1.5-flash';
+  }
+
+  setModel(model: string): void {
+    this.model = model;
+  }
+
+  getModel(): string {
+    return this.model;
   }
 
   async streamChat(
@@ -75,7 +83,7 @@ export class GeminiProvider implements ChatProvider {
               functionDeclarations: tools.map((t) => ({
                 name: t.name,
                 description: t.description,
-                parameters: t.inputSchema as any,
+                parameters: sanitizeSchema(t.inputSchema),
               })),
             },
           ]
@@ -115,4 +123,21 @@ export class GeminiProvider implements ChatProvider {
       },
     } as ProviderStream;
   }
+}
+
+function sanitizeSchema(schema: any): any {
+  if (Array.isArray(schema)) {
+    return schema.map(sanitizeSchema);
+  }
+  if (schema !== null && typeof schema === 'object') {
+    const result: any = {};
+    for (const [key, value] of Object.entries(schema)) {
+      if (key === '$schema' || key === 'additionalProperties') {
+        continue;
+      }
+      result[key] = sanitizeSchema(value);
+    }
+    return result;
+  }
+  return schema;
 }

@@ -11,11 +11,13 @@ program
   .option('-k, --api-key <key>', 'API key')
   .option('-b, --base-url <url>', 'API base URL')
   .option('-t, --max-turns <n>', 'Maximum turns', (v) => parseInt(v, 10))
+  .option('--onboarding', 'Force re-configuration')
   .argument('[prompt]', 'Initial prompt')
   .parse(process.argv);
 
 const options = program.opts();
 export const initialPrompt = program.args[0];
+export const forceOnboarding = !!options.onboarding;
 
 // Try to load initial config
 let loadedConfig: AgentConfig | null = null;

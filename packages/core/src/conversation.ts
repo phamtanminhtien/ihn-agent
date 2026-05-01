@@ -30,4 +30,8 @@ export class ConversationHistory {
       });
     }
   }
+
+  clear(): void {
+    this._messages.length = 0;
+  }
 }

@@ -1,4 +1,4 @@
-import { Agent } from '@ihn-agent/core';
+import { Agent, ConfigLoader } from '@ihn-agent/core';
 import {
   ContextManager,
   PromptComposer,
@@ -17,16 +17,23 @@ import { Onboarding } from './components/onboarding/onboarding';
 interface AppProps {
   initialConfig: AgentConfig | null;
   initialPrompt?: string | undefined;
+  forceOnboarding?: boolean;
 }
 
-export const App = ({ initialConfig, initialPrompt }: AppProps) => {
-  const [config, setConfig] = useState<AgentConfig | null>(initialConfig);
+export const App = ({ initialConfig, initialPrompt, forceOnboarding }: AppProps) => {
+  const [config, setConfig] = useState<AgentConfig | null>(forceOnboarding ? null : initialConfig);
   const [envContext, setEnvContext] = useState<EnvironmentSnapshot | null>(null);
 
   useEffect(() => {
     const manager = new ContextManager();
     manager.getSnapshot().then(setEnvContext);
   }, []);
+
+  useEffect(() => {
+    if (config) {
+      ConfigLoader.save(config);
+    }
+  }, [config]);
 
   const agent = useMemo(() => {
     if (!config || !envContext) return null;
@@ -60,7 +67,13 @@ export const App = ({ initialConfig, initialPrompt }: AppProps) => {
       console.error('Failed to create agent:', e);
       return null;
     }
-  }, [config, envContext]);
+  }, [config?.provider, config?.apiKey, config?.baseUrl, envContext]);
+
+  useEffect(() => {
+    if (agent && config?.model) {
+      agent.setModel(config.model);
+    }
+  }, [agent, config?.model]);
 
   if (!config) {
     return <Onboarding onComplete={setConfig} />;
@@ -74,5 +87,12 @@ export const App = ({ initialConfig, initialPrompt }: AppProps) => {
     );
   }
 
-  return <ChatInterface agent={agent} config={config} initialPrompt={initialPrompt} />;
+  return (
+    <ChatInterface
+      agent={agent}
+      config={config}
+      initialPrompt={initialPrompt}
+      onConfigChange={setConfig}
+    />
+  );
 };

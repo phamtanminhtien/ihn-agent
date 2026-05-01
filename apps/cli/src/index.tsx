@@ -1,6 +1,12 @@
 import { render } from 'ink';
 
 import { App } from './app';
-import { initialConfig, initialPrompt } from './cli/program';
+import { forceOnboarding, initialConfig, initialPrompt } from './cli/program';
 
-render(<App initialConfig={initialConfig} initialPrompt={initialPrompt} />);
+render(
+  <App
+    initialConfig={initialConfig}
+    initialPrompt={initialPrompt}
+    forceOnboarding={forceOnboarding}
+  />
+);

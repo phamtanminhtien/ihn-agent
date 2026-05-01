@@ -51,6 +51,9 @@ export interface ChatProvider {
    * Optional method to list available models for this provider
    */
   listModels?(): Promise<string[]>;
+
+  setModel(model: string): void;
+  getModel(): string;
 }
 
 export interface LoopIterationOutput {

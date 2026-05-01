@@ -61,6 +61,18 @@ export class Agent extends EventEmitter {
     this.registry.register(tool);
   }
 
+  reset(): void {
+    this.conversation.clear();
+  }
+
+  setModel(model: string): void {
+    this.options.provider.setModel(model);
+  }
+
+  getModel(): string {
+    return this.options.provider.getModel();
+  }
+
   getToolSchemas(): ToolSchema[] {
     return this.registry.getSchemas();
   }

@@ -3,21 +3,33 @@ import type { AgentConfig, AgentEvent, RiskLevel } from '@ihn-agent/types';
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';
 
+import { SLASH_COMMANDS } from '../../cli/commands';
 import { Markdown } from '../ui/markdown';
 import { ConfirmationBlock, ThinkingBlock, ToolCallBlock, ToolResultBlock } from './blocks';
 
-export type CLIMessage = { type: 'user'; content: string } | AgentEvent;
+export type CLIMessage =
+  | { type: 'user'; content: string }
+  | { type: 'info'; content: string }
+  | AgentEvent;
 
 interface ChatInterfaceProps {
   agent: Agent;
   config: AgentConfig;
   initialPrompt?: string | undefined;
+  onConfigChange?: (config: AgentConfig) => void;
 }
 
-export const ChatInterface = ({ agent, config, initialPrompt }: ChatInterfaceProps) => {
+export const ChatInterface = ({
+  agent,
+  config,
+  initialPrompt,
+  onConfigChange,
+}: ChatInterfaceProps) => {
   const [messages, setMessages] = useState<CLIMessage[]>([]);
   const [input, setInput] = useState('');
+  const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(false);
+  const [suggestionIndex, setSuggestionIndex] = useState(-1);
   const [currentAgentText, setCurrentAgentText] = useState('');
   const [pendingConfirmation, setPendingConfirmation] = useState<{
     toolCallId: string;
@@ -48,14 +60,100 @@ export const ChatInterface = ({ agent, config, initialPrompt }: ChatInterfacePro
 
     if (key.return) {
       if (input.trim() && !loading) {
-        handleSend(input.trim());
+        if (input.trim().startsWith('/')) {
+          handleCommand(input.trim());
+        } else {
+          handleSend(input.trim());
+        }
+      }
+    } else if (key.tab || key.downArrow) {
+      if (input.startsWith('/')) {
+        const suggestions = SLASH_COMMANDS.filter((c) =>
+          c.name.startsWith(searchQuery.toLowerCase())
+        );
+        if (suggestions.length > 0) {
+          const nextIndex = (suggestionIndex + 1) % suggestions.length;
+          const suggestion = suggestions[nextIndex];
+          if (suggestion) {
+            setSuggestionIndex(nextIndex);
+            setInput(suggestion.name);
+          }
+        }
+      }
+    } else if (key.upArrow) {
+      if (input.startsWith('/')) {
+        const suggestions = SLASH_COMMANDS.filter((c) =>
+          c.name.startsWith(searchQuery.toLowerCase())
+        );
+        if (suggestions.length > 0) {
+          const nextIndex = suggestionIndex <= 0 ? suggestions.length - 1 : suggestionIndex - 1;
+          const suggestion = suggestions[nextIndex];
+          if (suggestion) {
+            setSuggestionIndex(nextIndex);
+            setInput(suggestion.name);
+          }
+        }
       }
     } else if (key.backspace || (key.delete && !key.ctrl && !key.meta)) {
-      setInput((prev) => prev.slice(0, -1));
+      setInput((prev) => {
+        const next = prev.slice(0, -1);
+        if (!next.startsWith('/')) {
+          setSuggestionIndex(-1);
+          setSearchQuery('');
+        } else {
+          setSearchQuery(next);
+          setSuggestionIndex(-1);
+        }
+        return next;
+      });
     } else if (!key.ctrl && !key.meta) {
-      setInput((prev) => prev + inputChar);
+      setInput((prev) => {
+        const next = prev + inputChar;
+        if (!next.startsWith('/')) {
+          setSuggestionIndex(-1);
+          setSearchQuery('');
+        } else {
+          setSearchQuery(next);
+          setSuggestionIndex(-1);
+        }
+        return next;
+      });
     }
   });
+
+  const handleCommand = async (cmd: string) => {
+    const [command, ...args] = cmd.slice(1).split(' ');
+    setInput('');
+    setSearchQuery('');
+    setSuggestionIndex(-1);
+
+    if (!command) return;
+
+    const match = SLASH_COMMANDS.find(
+      (c) => c.name.slice(1).toLowerCase() === command.toLowerCase()
+    );
+
+    if (match) {
+      await match.handler(
+        {
+          agent,
+          setMessages,
+          config,
+          onConfigChange,
+          exit: () => process.exit(0),
+        },
+        args
+      );
+    } else {
+      setMessages((prev) => [
+        ...prev,
+        {
+          type: 'error',
+          message: `Unknown command: /${command}. Type /help for available commands.`,
+        },
+      ]);
+    }
+  };
 
   const handleSend = async (userMsg?: string, approvedIds?: Set<string>) => {
     if (userMsg) {
@@ -209,6 +307,17 @@ export const ChatInterface = ({ agent, config, initialPrompt }: ChatInterfacePro
                   </Box>
                 </Box>
               );
+            case 'info':
+              return (
+                <Box key={index} marginBottom={1} flexDirection="column">
+                  <Text bold color="magenta">
+                    System
+                  </Text>
+                  <Box paddingLeft={1}>
+                    <Markdown>{msg.content}</Markdown>
+                  </Box>
+                </Box>
+              );
             default:
               return null;
           }
@@ -246,6 +355,30 @@ export const ChatInterface = ({ agent, config, initialPrompt }: ChatInterfacePro
             ?{' '}
           </Text>
           <Text italic>Waiting for approval... (y/n)</Text>
+        </Box>
+      )}
+
+      {input.startsWith('/') && (
+        <Box flexDirection="column" paddingX={1} marginTop={0}>
+          {SLASH_COMMANDS.filter((c) => c.name.startsWith(searchQuery.toLowerCase())).map(
+            (c, i) => {
+              const suggestions = SLASH_COMMANDS.filter((s) =>
+                s.name.startsWith(searchQuery.toLowerCase())
+              );
+              const isSelected =
+                i === suggestionIndex ||
+                (suggestionIndex === -1 && suggestions.length === 1 && i === 0);
+              return (
+                <Box key={c.name} flexDirection="row">
+                  <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
+                    {isSelected ? '→ ' : '  '}
+                    {c.name.padEnd(10)}
+                  </Text>
+                  <Text color="dimColor"> - {c.description}</Text>
+                </Box>
+              );
+            }
+          )}
         </Box>
       )}
 

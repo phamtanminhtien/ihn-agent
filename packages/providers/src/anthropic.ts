@@ -15,7 +15,7 @@ export interface AnthropicProviderOptions {
 
 export class AnthropicProvider implements ChatProvider {
   private readonly client: Anthropic;
-  private readonly model: string;
+  private model: string;
 
   constructor(options: AnthropicProviderOptions) {
     this.client = new Anthropic({
@@ -23,6 +23,14 @@ export class AnthropicProvider implements ChatProvider {
       baseURL: options.baseUrl,
     });
     this.model = options.model ?? 'claude-3-5-sonnet-latest';
+  }
+
+  setModel(model: string): void {
+    this.model = model;
+  }
+
+  getModel(): string {
+    return this.model;
   }
 
   async streamChat(
