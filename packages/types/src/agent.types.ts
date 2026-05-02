@@ -5,16 +5,22 @@ import type {
   ToolResult,
 } from './message.types';
 import type { IPromptComposer, PromptVariables } from './prompt.types';
-import type { RiskLevel, ToolContext, ToolSchema } from './tool.types';
+import type { RiskLevel, ToolContext, ToolProvider, ToolSchema } from './tool.types';
 
 export type AgentTextDeltaEvent = { type: 'text_delta'; content: string };
 export type AgentThinkingEvent = { type: 'thinking'; content: string };
-export type AgentToolStartEvent = { type: 'tool_start'; name: string; input: unknown };
+export type AgentToolStartEvent = {
+  type: 'tool_start';
+  name: string;
+  input: unknown;
+  provider?: string | undefined;
+};
 export type AgentToolResultEvent = {
   type: 'tool_result';
   name: string;
   output: unknown;
   isError: boolean;
+  provider?: string | undefined;
 };
 
 export type AgentToolConfirmationEvent = {
@@ -24,6 +30,7 @@ export type AgentToolConfirmationEvent = {
   description: string;
   input: unknown;
   riskLevel: RiskLevel;
+  provider?: string | undefined;
 };
 export type AgentTurnEndEvent = { type: 'turn_end' };
 export type AgentErrorEvent = { type: 'error'; message: string };
@@ -60,6 +67,10 @@ export interface LoopIterationOutput {
   chunks: StreamChunk[];
   assistantMessage: AssistantMessage;
   toolResults: ToolResult[];
+}
+
+export interface IAgent {
+  registerProvider(provider: ToolProvider): Promise<void>;
 }
 
 export interface AgentOptions {

@@ -52,7 +52,14 @@ export const MessageList = ({
           case 'thinking':
             return <ThinkingBlock key={index} content={msg.content} />;
           case 'tool_start':
-            return <ToolCallBlock key={index} name={msg.name} input={msg.input} />;
+            return (
+              <ToolCallBlock
+                key={index}
+                name={msg.name}
+                input={msg.input}
+                provider={msg.provider}
+              />
+            );
           case 'tool_result':
             return (
               <ToolResultBlock
@@ -60,6 +67,7 @@ export const MessageList = ({
                 name={msg.name}
                 output={msg.output}
                 isError={msg.isError}
+                provider={msg.provider}
               />
             );
           case 'tool_confirmation':
@@ -70,6 +78,7 @@ export const MessageList = ({
                 description={msg.description}
                 input={msg.input}
                 riskLevel={msg.riskLevel}
+                provider={msg.provider}
               />
             );
           case 'error':

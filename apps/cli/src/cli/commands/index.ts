@@ -4,6 +4,7 @@ import { copyCommand } from './copy';
 import { exitCommand, quitCommand } from './exit';
 import { exportCommand } from './export';
 import { helpCommand } from './help';
+import { mcpCommand } from './mcp';
 import { modelCommand } from './model';
 import { recapCommand } from './recap';
 import { resetCommand } from './reset';
@@ -20,6 +21,7 @@ export const SLASH_COMMANDS: SlashCommand[] = [
   copyCommand,
   exportCommand,
   recapCommand,
+  mcpCommand,
   exitCommand,
   quitCommand,
 ];

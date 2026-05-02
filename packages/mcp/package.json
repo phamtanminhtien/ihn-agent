@@ -1,28 +1,22 @@
 {
-  "name": "@ihn-agent/prompt",
+  "name": "@ihn-agent/mcp",
   "version": "1.0.0",
   "type": "module",
   "private": true,
-  "description": "Prompt templates for IHN Agent",
-  "main": "./dist/index.js",
-  "types": "./dist/index.d.ts",
-  "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "default": "./dist/index.js"
-    }
-  },
+  "description": "MCP (Model Context Protocol) support for IHN Agent",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsup src/index.ts --format esm && tsc -p tsconfig.json --emitDeclarationOnly --declaration --outDir dist",
     "dev": "tsup src/index.ts --format esm --watch --dts",
-    "test": "vitest run",
     "type-check": "tsc --build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@ihn-agent/types": "workspace:*",
-    "zod": "^3.23.8"
+    "@ihn-agent/tools": "workspace:*",
+    "@modelcontextprotocol/sdk": "^1.6.0"
   }
 }

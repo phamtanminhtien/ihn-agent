@@ -6,6 +6,7 @@ import type {
   AssistantMessage,
   StreamChunk,
   Tool,
+  ToolProvider,
   ToolResult,
   ToolSchema,
 } from '@ihn-agent/types';
@@ -59,6 +60,10 @@ export class Agent extends EventEmitter {
 
   registerTool(tool: Tool): void {
     this.registry.register(tool);
+  }
+
+  async registerProvider(provider: ToolProvider): Promise<void> {
+    await this.registry.registerProvider(provider);
   }
 
   reset(): void {
@@ -123,10 +128,12 @@ export class Agent extends EventEmitter {
         } else if (chunk.type === 'thinking') {
           this.emitEvent({ type: 'thinking', content: chunk.content });
         } else {
+          const tool = this.registry.get(chunk.call.name);
           this.emitEvent({
             type: 'tool_start',
             name: chunk.call.name,
             input: chunk.call.input,
+            provider: tool?.metadata.provider,
           });
         }
 
@@ -161,6 +168,7 @@ export class Agent extends EventEmitter {
           input: iteration.assistantMessage.toolCalls?.find(
             (c) => c.id === pendingResult.toolCallId
           )?.input,
+          provider: tool?.metadata.provider,
         });
         return;
       }
@@ -187,11 +195,13 @@ export class Agent extends EventEmitter {
   }
 
   private emitToolResult(result: ToolResult): void {
+    const tool = this.registry.get(result.name);
     this.emitEvent({
       type: 'tool_result',
       name: result.name,
       output: result.content,
       isError: result.isError,
+      provider: tool?.metadata.provider,
     });
   }
 

@@ -11,7 +11,8 @@
     { "path": "../../packages/prompt" },
     { "path": "../../packages/tools" },
     { "path": "../../packages/types" },
-    { "path": "../../packages/cache" }
+    { "path": "../../packages/cache" },
+    { "path": "../../packages/mcp" }
   ],
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]

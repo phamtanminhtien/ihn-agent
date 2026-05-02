@@ -1,6 +1,13 @@
 export type ProviderName = 'anthropic' | 'openai' | 'gemini';
 export type UITheme = 'dark' | 'light';
 
+export interface McpServerConfig {
+  name: string;
+  command: string;
+  args?: string[] | undefined;
+  env?: Record<string, string> | undefined;
+}
+
 export interface AgentConfig {
   /**
    * LLM provider name
@@ -59,4 +66,9 @@ export interface AgentConfig {
    * @default 'dark'
    */
   theme: UITheme;
+
+  /**
+   * MCP Servers configuration
+   */
+  mcpServers?: McpServerConfig[] | undefined;
 }

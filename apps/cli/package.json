@@ -44,11 +44,12 @@
   "devDependencies": {
     "@ihn-agent/cache": "workspace:*",
     "@ihn-agent/core": "workspace:*",
-    "@ihn-agent/providers": "workspace:*",
     "@ihn-agent/prompt": "workspace:*",
+    "@ihn-agent/providers": "workspace:*",
     "@ihn-agent/tools": "workspace:*",
     "@ihn-agent/types": "workspace:*",
-    "@types/react": "^19.2.14"
+    "@types/react": "^19.2.14",
+    "react-devtools-core": "^7.0.1"
   },
   "repository": {
     "type": "git",

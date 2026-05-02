@@ -8,7 +8,7 @@
   "module": "dist/index.mjs",
   "types": "dist/index.d.ts",
   "scripts": {
-    "build": "tsup src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
+    "build": "tsup src/index.ts --format esm && tsc -p tsconfig.json --emitDeclarationOnly --declaration --outDir dist",
     "dev": "tsup src/index.ts --format esm --watch --dts",
     "start": "tsup src/index.ts --format esm --dts",
     "type-check": "tsc --build",

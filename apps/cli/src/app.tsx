@@ -1,4 +1,5 @@
 import { Agent, ConfigLoader } from '@ihn-agent/core';
+import { McpManager } from '@ihn-agent/mcp';
 import {
   ContextManager,
   PromptComposer,
@@ -73,6 +74,17 @@ export const App = ({ initialConfig, initialPrompt, forceOnboarding }: AppProps)
     }
   }, [config?.provider, config?.apiKey, config?.baseUrl, envContext]);
 
+  const mcpManager = useMemo(() => {
+    if (!agent) return null;
+    return new McpManager(agent);
+  }, [agent]);
+
+  useEffect(() => {
+    if (mcpManager && config?.mcpServers) {
+      mcpManager.loadServers(config.mcpServers);
+    }
+  }, [mcpManager]);
+
   useEffect(() => {
     if (agent && config?.model) {
       agent.setModel(config.model);
@@ -94,6 +106,7 @@ export const App = ({ initialConfig, initialPrompt, forceOnboarding }: AppProps)
   return (
     <ChatInterface
       agent={agent}
+      mcpManager={mcpManager || undefined}
       config={config}
       initialPrompt={initialPrompt}
       onConfigChange={setConfig}

@@ -23,6 +23,10 @@ export interface ToolMetadata {
    * ms before the tool call is aborted
    */
   timeout?: number;
+  /**
+   * The name of the provider that supplied this tool (e.g. 'builtin', 'mcp:server-name')
+   */
+  provider?: string | undefined;
 }
 
 export interface ToolContext {
@@ -52,4 +56,9 @@ export interface ToolSchema {
   name: string;
   description: string;
   inputSchema: unknown;
+}
+
+export interface ToolProvider {
+  name: string;
+  getTools(): Promise<Tool[]>;
 }

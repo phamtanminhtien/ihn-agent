@@ -3,6 +3,7 @@ export * from './fs/edit-file';
 export * from './fs/list-dir';
 export * from './fs/read-file';
 export * from './fs/write-file';
+export * from './provider';
 export * from './search/grep-search';
 export * from './search/web-search';
 export * from './shell/run-command';

@@ -74,4 +74,27 @@ describe('ToolRegistry', () => {
       inputSchema: { type: 'object' },
     });
   });
+
+  it('should register tools from a provider', async () => {
+    const mockTool: Tool = {
+      name: 'provider_tool',
+      description: 'A tool from a provider',
+      inputSchema: { type: 'object' },
+      metadata: {
+        requiresConfirmation: false,
+        riskLevel: 'safe',
+        cacheable: false,
+        retryable: false,
+      },
+      execute: async () => 'success',
+    };
+
+    const mockProvider = {
+      name: 'test_provider',
+      getTools: async () => [mockTool],
+    };
+
+    await registry.registerProvider(mockProvider);
+    expect(registry.get('provider_tool')).toBe(mockTool);
+  });
 });

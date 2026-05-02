@@ -50,17 +50,48 @@ function formatToolName(name: string): string {
     .join(' ');
 }
 
+function ToolHeader({
+  name,
+  provider,
+  icon,
+  color,
+}: {
+  name: string;
+  provider?: string | undefined;
+  icon: string;
+  color: string;
+}) {
+  return (
+    <Box flexDirection="row" gap={1} alignItems="center">
+      <Text color={color} bold>
+        {icon} {formatToolName(name)}
+      </Text>
+      {provider && (
+        <Text color="gray" dimColor italic>
+          ({provider})
+        </Text>
+      )}
+    </Box>
+  );
+}
+
 // ─────────────────────────────────────────────
 // Per-tool Call Blocks
 // ─────────────────────────────────────────────
 
 /** read_file */
-const ReadFileCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const ReadFileCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="cyan">
     <Box flexDirection="row" gap={1}>
-      <Text color="cyan" bold>
-        📄 {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="📄" color="cyan" />
       <Text color="gray">·</Text>
       <Text color="white">{truncatePath(String(input.path ?? ''))}</Text>
     </Box>
@@ -73,12 +104,18 @@ const ReadFileCallBlock = ({ name, input }: { name: string; input: Record<string
 );
 
 /** write_file */
-const WriteFileCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const WriteFileCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="yellow">
     <Box flexDirection="row" gap={1}>
-      <Text color="yellow" bold>
-        ✏️ {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="✏️" color="yellow" />
       <Text color="gray">·</Text>
       <Text color="white">{truncatePath(String(input.path ?? ''))}</Text>
     </Box>
@@ -91,14 +128,20 @@ const WriteFileCallBlock = ({ name, input }: { name: string; input: Record<strin
 );
 
 /** edit_file */
-const EditFileCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => {
+const EditFileCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => {
   const edits = Array.isArray(input.edits) ? input.edits : [];
   return (
     <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="yellow">
       <Box flexDirection="row" gap={1}>
-        <Text color="yellow" bold>
-          🖊 {formatToolName(name)}
-        </Text>
+        <ToolHeader name={name} provider={provider} icon="🖊" color="yellow" />
         <Text color="gray">·</Text>
         <Text color="white">{truncatePath(String(input.path ?? ''))}</Text>
         <Text color="gray">
@@ -139,12 +182,18 @@ const EditFileCallBlock = ({ name, input }: { name: string; input: Record<string
 };
 
 /** list_dir */
-const ListDirCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const ListDirCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="blue">
     <Box flexDirection="row" gap={1}>
-      <Text color="blue" bold>
-        📁 {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="📁" color="blue" />
       <Text color="gray">·</Text>
       <Text color="white">{truncatePath(String(input.path ?? ''))}</Text>
       {input.recursive ? (
@@ -157,12 +206,18 @@ const ListDirCallBlock = ({ name, input }: { name: string; input: Record<string,
 );
 
 /** run_command */
-const RunCommandCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const RunCommandCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="magenta">
     <Box flexDirection="row" gap={1}>
-      <Text color="magenta" bold>
-        💻 {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="💻" color="magenta" />
       {input.cwd ? (
         <>
           <Text color="gray">in</Text>
@@ -181,12 +236,18 @@ const RunCommandCallBlock = ({ name, input }: { name: string; input: Record<stri
 );
 
 /** web_search */
-const WebSearchCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const WebSearchCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="cyan">
     <Box flexDirection="row" gap={1}>
-      <Text color="cyan" bold>
-        🌐 {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="🌐" color="cyan" />
       <Text color="gray">·</Text>
       <Text color="white">&quot;{String(input.query ?? '')}&quot;</Text>
     </Box>
@@ -194,12 +255,18 @@ const WebSearchCallBlock = ({ name, input }: { name: string; input: Record<strin
 );
 
 /** grep_search */
-const GrepSearchCallBlock = ({ name, input }: { name: string; input: Record<string, unknown> }) => (
+const GrepSearchCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: Record<string, unknown>;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="blue">
     <Box flexDirection="row" gap={1}>
-      <Text color="blue" bold>
-        🔍 {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="🔍" color="blue" />
       <Text color="gray">·</Text>
       <Text color="white">{String(input.query ?? '')}</Text>
     </Box>
@@ -222,15 +289,15 @@ const GrepSearchCallBlock = ({ name, input }: { name: string; input: Record<stri
 const TaskCompleteCallBlock = ({
   name,
   input,
+  provider,
 }: {
   name: string;
   input: Record<string, unknown>;
+  provider?: string | undefined;
 }) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="green">
     <Box flexDirection="row" gap={1}>
-      <Text color="green" bold>
-        ✅ {formatToolName(name)}
-      </Text>
+      <ToolHeader name={name} provider={provider} icon="✅" color="green" />
     </Box>
     <Box paddingLeft={1}>
       <Text color="white" italic>
@@ -241,11 +308,17 @@ const TaskCompleteCallBlock = ({
 );
 
 /** Fallback generic call block */
-const GenericCallBlock = ({ name, input }: { name: string; input: unknown }) => (
+const GenericCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: unknown;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column" borderStyle="single" borderColor="yellow">
-    <Text color="yellow" bold>
-      🛠 {formatToolName(name)}
-    </Text>
+    <ToolHeader name={name} provider={provider} icon="🛠" color="yellow" />
     <Box paddingLeft={1}>
       <Markdown>{`\`\`\`json\n${JSON.stringify(input, null, 2)}\n\`\`\``}</Markdown>
     </Box>
@@ -255,29 +328,37 @@ const GenericCallBlock = ({ name, input }: { name: string; input: unknown }) => 
 // ─────────────────────────────────────────────
 // Main ToolCallBlock dispatcher
 // ─────────────────────────────────────────────
-export const ToolCallBlock = ({ name, input }: { name: string; input: unknown }) => {
+export const ToolCallBlock = ({
+  name,
+  input,
+  provider,
+}: {
+  name: string;
+  input: unknown;
+  provider?: string | undefined;
+}) => {
   const inp = (input ?? {}) as Record<string, unknown>;
 
   const inner = (() => {
     switch (name) {
       case 'read_file':
-        return <ReadFileCallBlock name={name} input={inp} />;
+        return <ReadFileCallBlock name={name} input={inp} provider={provider} />;
       case 'write_file':
-        return <WriteFileCallBlock name={name} input={inp} />;
+        return <WriteFileCallBlock name={name} input={inp} provider={provider} />;
       case 'edit_file':
-        return <EditFileCallBlock name={name} input={inp} />;
+        return <EditFileCallBlock name={name} input={inp} provider={provider} />;
       case 'list_dir':
-        return <ListDirCallBlock name={name} input={inp} />;
+        return <ListDirCallBlock name={name} input={inp} provider={provider} />;
       case 'run_command':
-        return <RunCommandCallBlock name={name} input={inp} />;
+        return <RunCommandCallBlock name={name} input={inp} provider={provider} />;
       case 'web_search':
-        return <WebSearchCallBlock name={name} input={inp} />;
+        return <WebSearchCallBlock name={name} input={inp} provider={provider} />;
       case 'grep_search':
-        return <GrepSearchCallBlock name={name} input={inp} />;
+        return <GrepSearchCallBlock name={name} input={inp} provider={provider} />;
       case 'task_complete':
-        return <TaskCompleteCallBlock name={name} input={inp} />;
+        return <TaskCompleteCallBlock name={name} input={inp} provider={provider} />;
       default:
-        return <GenericCallBlock name={name} input={inp} />;
+        return <GenericCallBlock name={name} input={inp} provider={provider} />;
     }
   })();
 
@@ -289,11 +370,29 @@ export const ToolCallBlock = ({ name, input }: { name: string; input: unknown })
 // ─────────────────────────────────────────────
 
 /** read_file result → show file content */
-const ReadFileResultBlock = ({ name, output }: { name: string; output: string }) => (
+const ReadFileResultBlock = ({
+  name,
+  output,
+  provider,
+}: {
+  name: string;
+  output: string;
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column">
-    <Text color="green" bold>
-      ✅ {formatToolName(name)} — {formatBytes(output.length)} read
-    </Text>
+    <Box flexDirection="row" gap={1}>
+      <Text color="green" bold>
+        ✅ {formatToolName(name)}
+      </Text>
+      {provider && (
+        <Text color="gray" dimColor italic>
+          ({provider})
+        </Text>
+      )}
+      <Text color="green" bold>
+        — {formatBytes(output.length)} read
+      </Text>
+    </Box>
     <Box paddingLeft={1}>
       <Markdown>{`\`\`\`\n${output.slice(0, 800)}${output.length > 800 ? '\n… (truncated)' : ''}\n\`\`\``}</Markdown>
     </Box>
@@ -304,14 +403,21 @@ const ReadFileResultBlock = ({ name, output }: { name: string; output: string })
 const FileWriteResultBlock = ({
   name,
   output,
+  provider,
 }: {
   name: string;
   output: Record<string, unknown>;
+  provider?: string | undefined;
 }) => (
   <Box paddingX={1} paddingY={0} flexDirection="row" gap={1}>
     <Text color="green" bold>
       ✅ {formatToolName(name)}
     </Text>
+    {provider && (
+      <Text color="gray" dimColor italic>
+        ({provider})
+      </Text>
+    )}
     <Text color="gray">→</Text>
     <Text color="white">{truncatePath(String(output.path ?? ''))}</Text>
   </Box>
@@ -325,14 +431,32 @@ interface FileEntry {
   path: string;
 }
 
-const ListDirResultBlock = ({ name, output }: { name: string; output: FileEntry[] }) => {
+const ListDirResultBlock = ({
+  name,
+  output,
+  provider,
+}: {
+  name: string;
+  output: FileEntry[];
+  provider?: string | undefined;
+}) => {
   const items = Array.isArray(output) ? output : [];
   const shown = items.slice(0, 12);
   return (
     <Box paddingX={1} paddingY={0} flexDirection="column">
-      <Text color="green" bold>
-        ✅ {formatToolName(name)} — {items.length} item{items.length !== 1 ? 's' : ''}
-      </Text>
+      <Box flexDirection="row" gap={1}>
+        <Text color="green" bold>
+          ✅ {formatToolName(name)}
+        </Text>
+        {provider && (
+          <Text color="gray" dimColor italic>
+            ({provider})
+          </Text>
+        )}
+        <Text color="green" bold>
+          — {items.length} item{items.length !== 1 ? 's' : ''}
+        </Text>
+      </Box>
       {shown.map((entry, i) => (
         <Box key={i} paddingLeft={1} flexDirection="row" gap={1}>
           <Text color={entry.isDirectory ? 'blue' : 'white'}>
@@ -368,18 +492,25 @@ const RunCommandResultBlock = ({
   name,
   output,
   isError,
+  provider,
 }: {
   name: string;
   output: RunCommandOutput;
   isError: boolean;
+  provider?: string | undefined;
 }) => {
   const ok = output.exitCode === 0 && !isError;
   return (
     <Box paddingX={1} paddingY={0} flexDirection="column">
-      <Box flexDirection="row" gap={1}>
+      <Box flexDirection="row" gap={1} alignItems="center">
         <Text color={ok ? 'green' : 'red'} bold>
           {ok ? '✅' : '❌'} {formatToolName(name)}
         </Text>
+        {provider && (
+          <Text color="gray" dimColor italic>
+            ({provider})
+          </Text>
+        )}
         <Text color="gray">exit {output.exitCode}</Text>
       </Box>
       {output.stdout ? (
@@ -406,11 +537,29 @@ interface WebSearchResult {
   snippet: string;
 }
 
-const WebSearchResultBlock = ({ name, output }: { name: string; output: WebSearchResult[] }) => (
+const WebSearchResultBlock = ({
+  name,
+  output,
+  provider,
+}: {
+  name: string;
+  output: WebSearchResult[];
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column">
-    <Text color="green" bold>
-      ✅ {formatToolName(name)} — {output.length} result{output.length !== 1 ? 's' : ''}
-    </Text>
+    <Box flexDirection="row" gap={1}>
+      <Text color="green" bold>
+        ✅ {formatToolName(name)}
+      </Text>
+      {provider && (
+        <Text color="gray" dimColor italic>
+          ({provider})
+        </Text>
+      )}
+      <Text color="green" bold>
+        — {output.length} result{output.length !== 1 ? 's' : ''}
+      </Text>
+    </Box>
     {output.slice(0, 4).map((r, i) => (
       <Box key={i} paddingLeft={1} flexDirection="column">
         <Text color="cyan" bold>
@@ -439,11 +588,29 @@ interface GrepMatch {
   content: string;
 }
 
-const GrepSearchResultBlock = ({ name, output }: { name: string; output: GrepMatch[] }) => (
+const GrepSearchResultBlock = ({
+  name,
+  output,
+  provider,
+}: {
+  name: string;
+  output: GrepMatch[];
+  provider?: string | undefined;
+}) => (
   <Box paddingX={1} paddingY={0} flexDirection="column">
-    <Text color="green" bold>
-      ✅ {formatToolName(name)} — {output.length} match{output.length !== 1 ? 'es' : ''}
-    </Text>
+    <Box flexDirection="row" gap={1}>
+      <Text color="green" bold>
+        ✅ {formatToolName(name)}
+      </Text>
+      {provider && (
+        <Text color="gray" dimColor italic>
+          ({provider})
+        </Text>
+      )}
+      <Text color="green" bold>
+        — {output.length} match{output.length !== 1 ? 'es' : ''}
+      </Text>
+    </Box>
     {output.slice(0, 8).map((m, i) => (
       <Box key={i} paddingLeft={1} flexDirection="row" gap={1}>
         <Text color="blue" dimColor>
@@ -476,10 +643,12 @@ const GenericResultBlock = ({
   name,
   output,
   isError,
+  provider,
 }: {
   name: string;
   output: unknown;
   isError: boolean;
+  provider?: string | undefined;
 }) => {
   const displayOutput =
     typeof output === 'string'
@@ -494,9 +663,16 @@ const GenericResultBlock = ({
 
   return (
     <Box paddingX={1} paddingY={0} flexDirection="column">
-      <Text color={isError ? 'red' : 'green'} bold>
-        {isError ? '❌ Error' : '✅ Result'} from {formatToolName(name)}
-      </Text>
+      <Box flexDirection="row" gap={1}>
+        <Text color={isError ? 'red' : 'green'} bold>
+          {isError ? '❌ Error' : '✅ Result'} from {formatToolName(name)}
+        </Text>
+        {provider && (
+          <Text color="gray" dimColor italic>
+            ({provider})
+          </Text>
+        )}
+      </Box>
       <Box paddingLeft={1}>
         <Markdown>{`\`\`\`json\n${displayOutput}\n\`\`\``}</Markdown>
       </Box>
@@ -511,13 +687,16 @@ export const ToolResultBlock = ({
   name,
   output,
   isError = false,
+  provider,
 }: {
   name: string;
   output: unknown;
   isError?: boolean | undefined;
+  provider?: string | undefined;
 }) => {
   const inner = (() => {
-    if (isError) return <GenericResultBlock name={name} output={output} isError />;
+    if (isError)
+      return <GenericResultBlock name={name} output={output} isError provider={provider} />;
 
     const parseOutput = (raw: unknown) => {
       if (typeof raw !== 'string') return raw;
@@ -530,18 +709,25 @@ export const ToolResultBlock = ({
 
     switch (name) {
       case 'read_file':
-        return <ReadFileResultBlock name={name} output={String(output ?? '')} />;
+        return (
+          <ReadFileResultBlock name={name} output={String(output ?? '')} provider={provider} />
+        );
       case 'write_file':
       case 'edit_file':
         return (
           <FileWriteResultBlock
             name={name}
             output={(parseOutput(output) ?? {}) as Record<string, unknown>}
+            provider={provider}
           />
         );
       case 'list_dir':
         return (
-          <ListDirResultBlock name={name} output={(parseOutput(output) ?? []) as FileEntry[]} />
+          <ListDirResultBlock
+            name={name}
+            output={(parseOutput(output) ?? []) as FileEntry[]}
+            provider={provider}
+          />
         );
       case 'run_command':
         return (
@@ -551,6 +737,7 @@ export const ToolResultBlock = ({
               (parseOutput(output) ?? { stdout: '', stderr: '', exitCode: 0 }) as RunCommandOutput
             }
             isError={isError}
+            provider={provider}
           />
         );
       case 'web_search':
@@ -558,16 +745,23 @@ export const ToolResultBlock = ({
           <WebSearchResultBlock
             name={name}
             output={(parseOutput(output) ?? []) as WebSearchResult[]}
+            provider={provider}
           />
         );
       case 'grep_search':
         return (
-          <GrepSearchResultBlock name={name} output={(parseOutput(output) ?? []) as GrepMatch[]} />
+          <GrepSearchResultBlock
+            name={name}
+            output={(parseOutput(output) ?? []) as GrepMatch[]}
+            provider={provider}
+          />
         );
       case 'task_complete':
         return <TaskCompleteResultBlock />;
       default:
-        return <GenericResultBlock name={name} output={output} isError={isError} />;
+        return (
+          <GenericResultBlock name={name} output={output} isError={isError} provider={provider} />
+        );
     }
   })();
 
@@ -582,11 +776,13 @@ export const ConfirmationBlock = ({
   description,
   input,
   riskLevel,
+  provider,
 }: {
   name: string;
   description: string;
   input: unknown;
   riskLevel: string;
+  provider?: string | undefined;
 }) => {
   const riskColor = riskLevel === 'high' ? 'red' : riskLevel === 'medium' ? 'yellow' : 'blue';
 
@@ -598,10 +794,15 @@ export const ConfirmationBlock = ({
       borderStyle="double"
       borderColor="magenta"
     >
-      <Box flexDirection="row" marginBottom={1}>
+      <Box flexDirection="row" marginBottom={1} gap={1} alignItems="center">
         <Text color="magenta" bold>
           ⚠️ Confirmation Required: {formatToolName(name)}
         </Text>
+        {provider && (
+          <Text color="gray" dimColor italic>
+            ({provider})
+          </Text>
+        )}
         <Box marginLeft={2}>
           <Text color={riskColor} bold>
             [{riskLevel.toUpperCase()} RISK]

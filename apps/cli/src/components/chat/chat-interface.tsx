@@ -1,4 +1,5 @@
 import { Agent } from '@ihn-agent/core';
+import type { McpManager } from '@ihn-agent/mcp';
 import type { AgentConfig, AgentEvent, RiskLevel } from '@ihn-agent/types';
 import { Box, Text, useInput } from 'ink';
 import { useEffect, useState } from 'react';
@@ -11,6 +12,7 @@ import type { CLIMessage } from './types';
 
 interface ChatInterfaceProps {
   agent: Agent;
+  mcpManager?: McpManager | undefined;
   config: AgentConfig;
   initialPrompt?: string | undefined;
   onConfigChange?: (config: AgentConfig) => void;
@@ -18,6 +20,7 @@ interface ChatInterfaceProps {
 
 export const ChatInterface = ({
   agent,
+  mcpManager,
   config,
   initialPrompt,
   onConfigChange,
@@ -32,6 +35,7 @@ export const ChatInterface = ({
     description: string;
     input: unknown;
     riskLevel: RiskLevel;
+    provider?: string | undefined;
   } | null>(null);
   const [elapsedTime, setElapsedTime] = useState(0);
   const [spinnerIndex, setSpinnerIndex] = useState(0);
@@ -93,6 +97,7 @@ export const ChatInterface = ({
       await match.handler(
         {
           agent,
+          mcpManager,
           setMessages,
           messages,
           config,
@@ -141,14 +146,7 @@ export const ChatInterface = ({
             accumulatedText = '';
             setCurrentAgentText('');
           }
-          setMessages((prev) => [
-            ...prev,
-            {
-              type: 'tool_start',
-              name: chunk.call.name,
-              input: chunk.call.input,
-            },
-          ]);
+          // tool_start is now handled by the event listener to include provider info
         }
       }
 
@@ -171,6 +169,7 @@ export const ChatInterface = ({
         setMessages((prev) => [...prev, event]);
         setActiveTool(null);
       } else if (event.type === 'tool_start') {
+        setMessages((prev) => [...prev, event]);
         setActiveTool(event.name);
       } else if (event.type === 'tool_confirmation') {
         setMessages((prev) => {
@@ -186,6 +185,7 @@ export const ChatInterface = ({
           description: event.description,
           input: event.input,
           riskLevel: event.riskLevel,
+          provider: event.provider,
         });
         setActiveTool(null);
       } else if (event.type === 'error') {
