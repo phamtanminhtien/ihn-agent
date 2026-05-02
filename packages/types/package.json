@@ -2,6 +2,8 @@
   "name": "@ihn-agent/types",
   "version": "1.0.0",
   "type": "module",
+  "private": true,
+  "description": "Shared TypeScript types for IHN Agent",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

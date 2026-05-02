@@ -2,6 +2,7 @@
   "name": "@ihn-agent/providers",
   "version": "1.0.0",
   "type": "module",
+  "private": true,
   "description": "LLM provider adapters for IHN Agent",
   "main": "dist/index.js",
   "module": "dist/index.mjs",

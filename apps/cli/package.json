@@ -1,21 +1,37 @@
 {
-  "name": "@ihn-agent/cli",
+  "name": "ihn-agent",
   "version": "1.0.0",
   "type": "module",
-  "bin": "./dist/index.js",
+  "description": "Intelligent Helper Node - An open-source agentic AI coding assistant",
+  "author": "IHN Agent Contributors",
+  "license": "MIT",
+  "bin": {
+    "ihn": "./dist/index.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "scripts": {
-    "build": "tsup src/index.tsx --format esm --clean",
+    "build": "tsup",
     "start": "node ./dist/index.js",
     "dev": "tsx watch ./src/index.tsx",
     "test": "vitest run",
     "type-check": "tsc --noEmit"
   },
+  "keywords": [
+    "ai",
+    "agent",
+    "coding-assistant",
+    "llm",
+    "cli",
+    "typescript"
+  ],
+  "engines": {
+    "node": ">=24.15.0"
+  },
   "dependencies": {
-    "@ihn-agent/core": "workspace:*",
-    "@ihn-agent/providers": "workspace:*",
-    "@ihn-agent/prompt": "workspace:*",
-    "@ihn-agent/tools": "workspace:*",
-    "@ihn-agent/types": "workspace:*",
     "@types/marked": "^6.0.0",
     "cli-highlight": "^2.1.11",
     "commander": "^13.1.0",
@@ -24,6 +40,20 @@
     "react": "^19.2.5"
   },
   "devDependencies": {
+    "@ihn-agent/core": "workspace:*",
+    "@ihn-agent/providers": "workspace:*",
+    "@ihn-agent/prompt": "workspace:*",
+    "@ihn-agent/tools": "workspace:*",
+    "@ihn-agent/types": "workspace:*",
     "@types/react": "^19.2.14"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phamtanminhtien/ihn-agent.git",
+    "directory": "apps/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/phamtanminhtien/ihn-agent/issues"
+  },
+  "homepage": "https://github.com/phamtanminhtien/ihn-agent#readme"
 }

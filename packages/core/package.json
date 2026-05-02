@@ -2,6 +2,8 @@
   "name": "@ihn-agent/core",
   "version": "1.0.0",
   "type": "module",
+  "private": true,
+  "description": "Core agent orchestration and execution logic for IHN Agent",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {

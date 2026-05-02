@@ -1,7 +1,7 @@
 {
-  "name": "ihn-agent",
+  "name": "ihn-agent-monorepo",
   "version": "1.0.0",
-  "description": "",
+  "description": "Intelligent Helper Node - An open-source agentic AI coding assistant",
   "main": "index.js",
   "type": "module",
   "private": true,
@@ -12,14 +12,29 @@
     "lint:fix": "pnpm -r lint --fix",
     "format": "prettier --write .",
     "type-check": "pnpm -r type-check",
-    "cli:dev": "pnpm --filter @ihn-agent/cli dev",
-    "cli:build": "pnpm --filter @ihn-agent/cli build",
-    "cli:start": " pnpm --filter @ihn-agent/cli start",
+    "cli:dev": "pnpm --filter ihn-agent dev",
+    "cli:build": "pnpm --filter ihn-agent build",
+    "cli:start": " pnpm --filter ihn-agent start",
     "build": "pnpm -r build"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "keywords": [
+    "ai",
+    "agent",
+    "coding-assistant",
+    "llm",
+    "typescript",
+    "cli"
+  ],
+  "author": "IHN Agent Contributors",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/phamtanminhtien/ihn-agent.git"
+  },
+  "bugs": {
+    "url": "https://github.com/phamtanminhtien/ihn-agent/issues"
+  },
+  "homepage": "https://github.com/phamtanminhtien/ihn-agent#readme",
   "engines": {
     "node": ">=24.15.0"
   },

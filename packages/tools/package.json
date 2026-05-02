@@ -2,6 +2,7 @@
   "name": "@ihn-agent/tools",
   "version": "1.0.0",
   "type": "module",
+  "private": true,
   "description": "Built-in tools for IHN Agent",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
