@@ -32,9 +32,12 @@ export const SuggestionList = ({ suggestions, suggestionIndex }: SuggestionListP
           <Box key={s.value + idx} flexDirection="row">
             <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
               {isSelected ? '→ ' : '  '}
-              {icon} {s.name.padEnd(20)}
+              {icon}{' '}
             </Text>
-            <Text color="dimColor"> - {s.description}</Text>
+            <Text color={isSelected ? 'white' : 'gray'} bold={isSelected}>
+              {s.name}
+            </Text>
+            {s.type === 'command' && <Text color="dimColor"> - {s.description}</Text>}
           </Box>
         );
       })}

@@ -1,0 +1,33 @@
+{
+  "name": "@ihn-agent/cache",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "Caching utilities for IHN Agent",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "default": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean && tsc -p tsconfig.json --emitDeclarationOnly --outDir dist",
+    "dev": "tsup src/index.ts --format esm --watch --dts",
+    "type-check": "tsc --build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
+  },
+  "dependencies": {
+    "@ihn-agent/types": "workspace:*",
+    "chokidar": "^4.0.3",
+    "fast-glob": "^3.3.2",
+    "ignore": "^5.3.1"
+  },
+  "devDependencies": {
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.5"
+  }
+}

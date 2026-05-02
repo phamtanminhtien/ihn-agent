@@ -2,6 +2,7 @@ import { Box, Text, useInput } from 'ink';
 import { useState } from 'react';
 
 import { useSuggestions } from '../../hooks/use-suggestions';
+import { fileTreeCache } from '../../services/suggestion-service';
 import { SuggestionList } from './suggestion-list';
 
 interface ChatInputProps {
@@ -34,6 +35,10 @@ export const ChatInput = ({ onSend, onCommand, disabled, pendingConfirmation }: 
         const nextIndex = suggestionIndex === -1 ? 0 : suggestionIndex;
         const s = suggestions[nextIndex];
         if (s) {
+          if (s.type === 'file' || s.type === 'directory') {
+            fileTreeCache.recordMention(s.value);
+          }
+
           const newValue =
             s.type === 'command'
               ? s.value
@@ -103,8 +108,6 @@ export const ChatInput = ({ onSend, onCommand, disabled, pendingConfirmation }: 
 
   return (
     <Box flexDirection="column">
-      <SuggestionList suggestions={suggestions} suggestionIndex={suggestionIndex} />
-
       {!pendingConfirmation ? (
         <Box borderStyle="round" paddingX={1} borderColor="yellow">
           <Text color="yellow" bold>
@@ -121,6 +124,8 @@ export const ChatInput = ({ onSend, onCommand, disabled, pendingConfirmation }: 
           <Text italic>Waiting for approval... (y/n)</Text>
         </Box>
       )}
+
+      <SuggestionList suggestions={suggestions} suggestionIndex={suggestionIndex} />
     </Box>
   );
 };

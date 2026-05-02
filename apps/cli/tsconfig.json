@@ -10,7 +10,8 @@
     { "path": "../../packages/providers" },
     { "path": "../../packages/prompt" },
     { "path": "../../packages/tools" },
-    { "path": "../../packages/types" }
+    { "path": "../../packages/types" },
+    { "path": "../../packages/cache" }
   ],
   "include": ["src/**/*"],
   "exclude": ["**/*.spec.ts"]

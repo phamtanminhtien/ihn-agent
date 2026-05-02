@@ -1,8 +1,7 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { useMemo, useState } from 'react';
 
 import { SLASH_COMMANDS, type SlashCommand } from '../cli/commands';
+import { fileTreeCache } from '../services/suggestion-service';
 
 export interface Suggestion {
   name: string;
@@ -33,38 +32,13 @@ export const useSuggestions = (input: string) => {
     if (mentionMatch) {
       const query = mentionMatch[1] || '';
       try {
-        const cwd = process.cwd();
-        let searchDir = cwd;
-        let fileQuery = query;
-
-        if (query.includes('/')) {
-          const lastSlash = query.lastIndexOf('/');
-          const dirPart = query.slice(0, lastSlash);
-          fileQuery = query.slice(lastSlash + 1);
-          searchDir = path.resolve(cwd, dirPart);
-        }
-
-        if (fs.existsSync(searchDir) && fs.statSync(searchDir).isDirectory()) {
-          const files = fs.readdirSync(searchDir, { withFileTypes: true });
-          return files
-            .filter((f) => f.name.toLowerCase().startsWith(fileQuery.toLowerCase()))
-            .filter((f) => !f.name.startsWith('.')) // Hide hidden files
-            .map((f) => {
-              const dirPart = query.includes('/') ? query.slice(0, query.lastIndexOf('/') + 1) : '';
-              const value = dirPart + f.name + (f.isDirectory() ? '/' : '');
-              return {
-                name: f.name,
-                description: f.isDirectory() ? 'Directory' : 'File',
-                value: value,
-                type: (f.isDirectory() ? 'directory' : 'file') as 'directory' | 'file',
-              };
-            })
-            .sort((a, b) => {
-              if (a.type === b.type) return a.name.localeCompare(b.name);
-              return a.type === 'directory' ? -1 : 1;
-            })
-            .slice(0, 10);
-        }
+        const results = fileTreeCache.search(query);
+        return results.map((item) => ({
+          name: item.path,
+          description: item.isDirectory ? 'Directory' : 'File',
+          value: item.path + (item.isDirectory ? '/' : ''),
+          type: item.isDirectory ? 'directory' : 'file',
+        }));
       } catch (e) {
         return [];
       }
