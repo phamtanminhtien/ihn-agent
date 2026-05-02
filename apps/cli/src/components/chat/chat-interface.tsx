@@ -167,9 +167,12 @@ export const ChatInterface = ({
         {
           agent,
           setMessages,
+          messages,
           config,
           onConfigChange,
           exit: () => process.exit(0),
+          setCurrentAgentText,
+          setLoading,
         },
         args
       );

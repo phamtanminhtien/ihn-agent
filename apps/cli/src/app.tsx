@@ -48,7 +48,11 @@ export const App = ({ initialConfig, initialPrompt, forceOnboarding }: AppProps)
       const registry = new PromptRegistry();
       registerDefaultBlocks(registry);
       const composer = new PromptComposer(registry);
-      composer.addBlock('persona/base').addBlock('rules/tool-usage').addBlock('rules/security');
+      composer
+        .addBlock('persona/base')
+        .addBlock('rules/tool-usage')
+        .addBlock('rules/security')
+        .addBlock('rules/code-quality');
 
       const a = new Agent({
         provider,

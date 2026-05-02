@@ -83,11 +83,14 @@ export class Agent extends EventEmitter {
 
   async *run(
     userMessage?: string,
-    options?: { approvedToolCallIds?: Set<string> | undefined }
+    options?: {
+      approvedToolCallIds?: Set<string> | undefined;
+      skipHistory?: boolean;
+    }
   ): AsyncGenerator<StreamChunk> {
     await this.ensureSystemPrompt();
 
-    if (userMessage) {
+    if (userMessage && !options?.skipHistory) {
       this.conversation.addUser(userMessage);
     }
 
@@ -133,7 +136,7 @@ export class Agent extends EventEmitter {
 
       const iteration = next.value;
 
-      if (!resumeMessage) {
+      if (!resumeMessage && !options?.skipHistory) {
         this.conversation.addAssistant(iteration.assistantMessage);
       }
 
@@ -172,6 +175,15 @@ export class Agent extends EventEmitter {
       type: 'error',
       message: `Exceeded max turns (${this.maxTurns})`,
     });
+  }
+
+  async *summarize(prompt: string): AsyncGenerator<StreamChunk> {
+    const hasHistory = this.conversation.messages.some((m) => m.role !== 'system');
+    if (!hasHistory) {
+      throw new Error('No conversation history yet. Start chatting to get a recap!');
+    }
+
+    yield* this.run(prompt, { skipHistory: true });
   }
 
   private emitToolResult(result: ToolResult): void {
