@@ -326,11 +326,12 @@ interface FileEntry {
 }
 
 const ListDirResultBlock = ({ name, output }: { name: string; output: FileEntry[] }) => {
-  const shown = output.slice(0, 12);
+  const items = Array.isArray(output) ? output : [];
+  const shown = items.slice(0, 12);
   return (
     <Box paddingX={1} paddingY={0} flexDirection="column">
       <Text color="green" bold>
-        ✅ {formatToolName(name)} — {output.length} item{output.length !== 1 ? 's' : ''}
+        ✅ {formatToolName(name)} — {items.length} item{items.length !== 1 ? 's' : ''}
       </Text>
       {shown.map((entry, i) => (
         <Box key={i} paddingLeft={1} flexDirection="row" gap={1}>
@@ -345,10 +346,10 @@ const ListDirResultBlock = ({ name, output }: { name: string; output: FileEntry[
           ) : null}
         </Box>
       ))}
-      {output.length > 12 ? (
+      {items.length > 12 ? (
         <Box paddingLeft={1}>
           <Text color="gray" dimColor>
-            … and {output.length - 12} more
+            … and {items.length - 12} more
           </Text>
         </Box>
       ) : null}
@@ -518,28 +519,51 @@ export const ToolResultBlock = ({
   const inner = (() => {
     if (isError) return <GenericResultBlock name={name} output={output} isError />;
 
+    const parseOutput = (raw: unknown) => {
+      if (typeof raw !== 'string') return raw;
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return raw;
+      }
+    };
+
     switch (name) {
       case 'read_file':
         return <ReadFileResultBlock name={name} output={String(output ?? '')} />;
       case 'write_file':
       case 'edit_file':
         return (
-          <FileWriteResultBlock name={name} output={(output ?? {}) as Record<string, unknown>} />
+          <FileWriteResultBlock
+            name={name}
+            output={(parseOutput(output) ?? {}) as Record<string, unknown>}
+          />
         );
       case 'list_dir':
-        return <ListDirResultBlock name={name} output={(output ?? []) as FileEntry[]} />;
+        return (
+          <ListDirResultBlock name={name} output={(parseOutput(output) ?? []) as FileEntry[]} />
+        );
       case 'run_command':
         return (
           <RunCommandResultBlock
             name={name}
-            output={(output ?? { stdout: '', stderr: '', exitCode: 0 }) as RunCommandOutput}
+            output={
+              (parseOutput(output) ?? { stdout: '', stderr: '', exitCode: 0 }) as RunCommandOutput
+            }
             isError={isError}
           />
         );
       case 'web_search':
-        return <WebSearchResultBlock name={name} output={(output ?? []) as WebSearchResult[]} />;
+        return (
+          <WebSearchResultBlock
+            name={name}
+            output={(parseOutput(output) ?? []) as WebSearchResult[]}
+          />
+        );
       case 'grep_search':
-        return <GrepSearchResultBlock name={name} output={(output ?? []) as GrepMatch[]} />;
+        return (
+          <GrepSearchResultBlock name={name} output={(parseOutput(output) ?? []) as GrepMatch[]} />
+        );
       case 'task_complete':
         return <TaskCompleteResultBlock />;
       default:
