@@ -92,10 +92,23 @@ export class FileTreeCache {
   }
 
   private startWatcher() {
+    // Use a function-based ignored for chokidar v4 compatibility.
+    // Using glob strings in v4 can cause it to scan node_modules before filtering,
+    // causing a hang on startup.
+    const ignoredFn = (filePath: string) => {
+      const relative = path.relative(this.rootPath, filePath);
+      // Empty string = root itself; '..' = outside root. Never ignore these.
+      if (!relative || relative.startsWith('..')) return false;
+      return this.ig.ignores(relative);
+    };
+
     this.watcher = watch(this.rootPath, {
-      ignored: this.ignorePatterns,
-      persistent: true,
+      ignored: ignoredFn,
+      // persistent: false ensures the watcher does NOT keep the Node.js
+      // event loop alive, so the CLI can exit normally when Ink is done.
+      persistent: false,
       ignoreInitial: true,
+      awaitWriteFinish: { stabilityThreshold: 300, pollInterval: 100 },
     });
 
     this.watcher
