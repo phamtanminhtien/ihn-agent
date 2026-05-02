@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.0",
-    "@google/generative-ai": "^0.21.0",
+    "@google/generative-ai": "^0.24.1",
     "@ihn-agent/types": "workspace:*",
     "openai": "^4.82.0"
   }
