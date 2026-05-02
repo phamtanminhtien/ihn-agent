@@ -81,21 +81,6 @@ importers:
 
   apps/cli:
     dependencies:
-      '@ihn-agent/core':
-        specifier: workspace:*
-        version: link:../../packages/core
-      '@ihn-agent/prompt':
-        specifier: workspace:*
-        version: link:../../packages/prompt
-      '@ihn-agent/providers':
-        specifier: workspace:*
-        version: link:../../packages/providers
-      '@ihn-agent/tools':
-        specifier: workspace:*
-        version: link:../../packages/tools
-      '@ihn-agent/types':
-        specifier: workspace:*
-        version: link:../../packages/types
       '@types/marked':
         specifier: ^6.0.0
         version: 6.0.0
@@ -115,6 +100,21 @@ importers:
         specifier: ^19.2.5
         version: 19.2.5
     devDependencies:
+      '@ihn-agent/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@ihn-agent/prompt':
+        specifier: workspace:*
+        version: link:../../packages/prompt
+      '@ihn-agent/providers':
+        specifier: workspace:*
+        version: link:../../packages/providers
+      '@ihn-agent/tools':
+        specifier: workspace:*
+        version: link:../../packages/tools
+      '@ihn-agent/types':
+        specifier: workspace:*
+        version: link:../../packages/types
       '@types/react':
         specifier: ^19.2.14
         version: 19.2.14
