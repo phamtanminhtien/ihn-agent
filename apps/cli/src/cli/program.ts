@@ -1,3 +1,6 @@
+import fs from 'node:fs';
+import path from 'node:path';
+
 import { ConfigLoader } from '@ihn-agent/core';
 import type { AgentConfig } from '@ihn-agent/types';
 import { Command } from 'commander';
@@ -11,12 +14,25 @@ program
   .option('-k, --api-key <key>', 'API key')
   .option('-b, --base-url <url>', 'API base URL')
   .option('-t, --max-turns <n>', 'Maximum turns', (v) => parseInt(v, 10))
+  .option('-i, --prompt <string>', 'Initial prompt')
   .option('--onboarding', 'Force re-configuration')
-  .argument('[prompt]', 'Initial prompt')
+  .argument('[path]', 'Working directory', '.')
   .parse(process.argv);
 
 const options = program.opts();
-export const initialPrompt = program.args[0];
+const targetPath = program.args[0] || '.';
+
+// Change working directory if specified
+if (targetPath !== '.') {
+  const absolutePath = path.resolve(targetPath);
+  if (!fs.existsSync(absolutePath) || !fs.statSync(absolutePath).isDirectory()) {
+    console.error(`Error: Directory not found: ${absolutePath}`);
+    process.exit(1);
+  }
+  process.chdir(absolutePath);
+}
+
+export const initialPrompt = options.prompt;
 export const forceOnboarding = !!options.onboarding;
 
 // Try to load initial config
