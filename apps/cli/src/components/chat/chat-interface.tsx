@@ -7,6 +7,8 @@ import { SLASH_COMMANDS } from '../../cli/commands';
 import { Markdown } from '../ui/markdown';
 import { ConfirmationBlock, ThinkingBlock, ToolCallBlock, ToolResultBlock } from './blocks';
 
+const MAX_VISIBLE_SUGGESTIONS = 5;
+
 export type CLIMessage =
   | { type: 'user'; content: string }
   | { type: 'info'; content: string }
@@ -408,6 +410,47 @@ export const ChatInterface = ({
       </Box>
 
       <Box flexDirection="column">
+        {input.startsWith('/') && (
+          <Box flexDirection="column" paddingX={1} marginBottom={0}>
+            {(() => {
+              const suggestions = SLASH_COMMANDS.filter((c) =>
+                c.name.startsWith(searchQuery.toLowerCase())
+              );
+
+              const half = Math.floor(MAX_VISIBLE_SUGGESTIONS / 2);
+              const start = Math.max(
+                0,
+                Math.min(
+                  suggestionIndex - half,
+                  Math.max(0, suggestions.length - MAX_VISIBLE_SUGGESTIONS)
+                )
+              );
+              const visible = suggestions.slice(start, start + MAX_VISIBLE_SUGGESTIONS);
+
+              return (
+                <>
+                  {visible.map((c) => {
+                    const isSelected =
+                      suggestions.indexOf(c) === suggestionIndex ||
+                      (suggestionIndex === -1 &&
+                        suggestions.length === 1 &&
+                        suggestions.indexOf(c) === 0);
+                    return (
+                      <Box key={c.name} flexDirection="row">
+                        <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
+                          {isSelected ? '→ ' : '  '}
+                          {c.name.padEnd(10)}
+                        </Text>
+                        <Text color="dimColor"> - {c.description}</Text>
+                      </Box>
+                    );
+                  })}
+                </>
+              );
+            })()}
+          </Box>
+        )}
+
         {!pendingConfirmation ? (
           <Box borderStyle="round" paddingX={1} borderColor="yellow">
             <Text color="yellow" bold>
@@ -422,30 +465,6 @@ export const ChatInterface = ({
               ?{' '}
             </Text>
             <Text italic>Waiting for approval... (y/n)</Text>
-          </Box>
-        )}
-
-        {input.startsWith('/') && (
-          <Box flexDirection="column" paddingX={1} marginTop={0}>
-            {SLASH_COMMANDS.filter((c) => c.name.startsWith(searchQuery.toLowerCase())).map(
-              (c, i) => {
-                const suggestions = SLASH_COMMANDS.filter((s) =>
-                  s.name.startsWith(searchQuery.toLowerCase())
-                );
-                const isSelected =
-                  i === suggestionIndex ||
-                  (suggestionIndex === -1 && suggestions.length === 1 && i === 0);
-                return (
-                  <Box key={c.name} flexDirection="row">
-                    <Text color={isSelected ? 'cyan' : 'gray'} bold={isSelected}>
-                      {isSelected ? '→ ' : '  '}
-                      {c.name.padEnd(10)}
-                    </Text>
-                    <Text color="dimColor"> - {c.description}</Text>
-                  </Box>
-                );
-              }
-            )}
           </Box>
         )}
 
