@@ -16,7 +16,7 @@
     "lint:fix": "eslint . --fix"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.36.0",
+    "@anthropic-ai/sdk": "^0.92.0",
     "@google/generative-ai": "^0.21.0",
     "@ihn-agent/types": "workspace:*",
     "openai": "^4.82.0"
