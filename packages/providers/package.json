@@ -11,7 +11,9 @@
     "build": "tsup src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
     "dev": "tsup src/index.ts --format esm --watch --dts",
     "start": "tsup src/index.ts --format esm --dts",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.36.0",
