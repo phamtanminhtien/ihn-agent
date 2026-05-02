@@ -11,5 +11,12 @@ export default defineConfig({
     '@ihn-agent/prompt',
     '@ihn-agent/tools',
     '@ihn-agent/types',
+    'ink',
+    'react',
   ],
+  banner: {
+    js: "import { createRequire } from 'module'; const require = createRequire(import.meta.url);",
+  },
+  platform: 'node',
+  external: ['react-devtools-core', 'punycode'],
 });
