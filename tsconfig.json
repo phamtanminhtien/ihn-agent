@@ -1,6 +1,9 @@
 {
   // Visit https://aka.ms/tsconfig to read more about this file
   "compilerOptions": {
+    "paths": {
+      "@ihn-agent/*": ["./packages/*/src", "./apps/*/src"]
+    },
     // File Layout
     // "rootDir": "./src",
     // "outDir": "./dist",
@@ -16,10 +19,10 @@
     // "types": ["node"],
     // and npm install -D @types/node
 
-    // Other Outputs
-    "sourceMap": true,
+    "composite": true,
     "declaration": true,
     "declarationMap": true,
+    "sourceMap": true,
 
     // Stricter Typechecking Options
     "noUncheckedIndexedAccess": true,
@@ -41,5 +44,14 @@
     "noUncheckedSideEffectImports": true,
     "moduleDetection": "force",
     "skipLibCheck": true
-  }
+  },
+  "references": [
+    { "path": "packages/types" },
+    { "path": "packages/core" },
+    { "path": "packages/prompt" },
+    { "path": "packages/providers" },
+    { "path": "packages/tools" },
+    { "path": "apps/cli" }
+  ],
+  "files": []
 }

@@ -18,7 +18,9 @@
     "start": "node ./dist/index.js",
     "dev": "tsx watch ./src/index.tsx",
     "test": "vitest run",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [
     "ai",

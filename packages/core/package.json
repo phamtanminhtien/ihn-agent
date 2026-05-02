@@ -17,7 +17,9 @@
     "build": "tsup src/index.ts --format esm && tsc --emitDeclarationOnly --declaration --outDir dist",
     "dev": "tsup src/index.ts --format esm --watch --dts",
     "test": "vitest run",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --build",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "dependencies": {
     "@ihn-agent/types": "workspace:*"
